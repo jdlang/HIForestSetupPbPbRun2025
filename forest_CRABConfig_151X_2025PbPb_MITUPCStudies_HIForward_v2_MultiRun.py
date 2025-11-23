@@ -10,7 +10,7 @@ username = getUsername()
 # INPUT/OUTPUT SETTINGS
 
 pd = '0'
-run = '399661'
+run = '399658-399662'
 jobTag = 'PbPbUPC_HIForward' + pd + '_' + run
 cmsswConfig = 'forest_CMSSWConfig_Run3_151X_2025PbPb_MITUPCStudies_v2.py'
 
@@ -43,7 +43,7 @@ if isOnDAS :
     config.Data.inputDBS = inputDatabase
     config.Data.lumiMask = '/afs/cern.ch/user/j/jdlang/public/2025PbPb_DCS_20251118.json'
     config.Data.splitting = 'EventAwareLumiBased'
-    config.Data.unitsPerJob = 5000
+    config.Data.unitsPerJob = 500
     config.Data.totalUnits = -1
 else :
     config.Data.outputPrimaryDataset = jobTag
