@@ -62,96 +62,104 @@ int main(
     return 1;
   }
   
-  TTree* tempTree;
+  TTree* tempZDC = (TTree*) fin->Get("zdcanalyzer/zdcrechit");
+  TTree* tempHLT = (TTree*) fin->Get("hltanalysis/HltTree");
+  TTree* tempSkim = (TTree*) fin->Get("skimanalysis/HltTree");
+  TTree* tempTrack = (TTree*) fin->Get("PbPbTracks/trackTree");
+  TTree* tempDfinder = (TTree*) fin->Get("Dfinder/ntDkpi");
   
-  tempTree = (TTree*) fin->Get("zdcanalyzer/zdcrechit");
-  if (tempTree != nullptr) {
+  if (tempZDC == nullptr ||
+      tempHLT == nullptr ||
+      tempSkim == nullptr ||
+      tempTrack == nullptr ||
+      tempDfinder == nullptr
+    ) return 1;
+  else {
     tree->AddFriend("zdcanalyzer/zdcrechit", fin);
-    delete tempTree;
-  } else return 1;
-
-  tempTree = (TTree*) fin->Get("hltanalysis/HltTree");
-  if (tempTree != nullptr) {
     tree->AddFriend("hltanalysis/HltTree", fin);
-    delete tempTree;
-  } else return 1;
-  
-  tempTree = (TTree*) fin->Get("PbPbTracks/trackTree");
-  if (tempTree != nullptr) {
+    tree->AddFriend("skimanalysis/HltTree", fin);
     tree->AddFriend("PbPbTracks/trackTree", fin);
-    delete tempTree;
-  } else return 1;
+    tree->AddFriend("Dfinder/ntDkpi", fin);
+    delete tempZDC;
+    delete tempHLT;
+    delete tempSkim;
+    delete tempTrack;
+    delete tempDfinder;
+  }
   
   tree->SetBranchStatus("*", 0);
   
+  // HltTree
   float hiHFPlus_pf;
   float hiHFMinus_pf;
   CheckAndSetBranch(tree, hiHFPlus_pf);
   CheckAndSetBranch(tree, hiHFMinus_pf);
   
+  // zdcrechit
   float sumPlus;
   float sumMinus;
   CheckAndSetBranch(tree, sumPlus);
   CheckAndSetBranch(tree, sumMinus);
   
+  // trackTree
   int nTrk;
   int nVtx;
   vector<float>* trkPt = new vector<float>;
   CheckAndSetBranch(tree, nTrk);
   CheckAndSetBranch(tree, nVtx);
   CheckAndSetBranch(tree, trkPt);
-
+  
+  // skimananalysis/HltTree
+  int pclusterCompatibilityFilter;
+  int pprimaryVertexFilter;
+  CheckAndSetBranch(tree, pclusterCompatibilityFilter);
+  CheckAndSetBranch(tree, pprimaryVertexFilter);
+  
+  // hltanalysis/HltTree
   int HLT_HIUPC_ZeroBias_MaxPixelCluster10000_v5;
-//  int HLT_HIUPC_ZeroBias_MaxPixelCluster10000_v5_PrescaleNumerator;
-//  int HLT_HIUPC_ZeroBias_MaxPixelCluster10000_v5_PrescaleDenominator;
   int HLT_HIUPC_ZDC1nOR_MaxPixelCluster10000_v5;
-//  int HLT_HIUPC_ZDC1nOR_MaxPixelCluster10000_v5_PrescaleNumerator;
-//  int HLT_HIUPC_ZDC1nOR_MaxPixelCluster10000_v5_PrescaleDenominator;
   CheckAndSetBranch(tree, HLT_HIUPC_ZeroBias_MaxPixelCluster10000_v5);
-//  CheckAndSetBranch(tree, HLT_HIUPC_ZeroBias_MaxPixelCluster10000_v5_PrescaleNumerator);
-//  CheckAndSetBranch(tree, HLT_HIUPC_ZeroBias_MaxPixelCluster10000_v5_PrescaleDenominator);
   CheckAndSetBranch(tree, HLT_HIUPC_ZDC1nOR_MaxPixelCluster10000_v5);
-//  CheckAndSetBranch(tree, HLT_HIUPC_ZDC1nOR_MaxPixelCluster10000_v5_PrescaleNumerator);
-//  CheckAndSetBranch(tree, HLT_HIUPC_ZDC1nOR_MaxPixelCluster10000_v5_PrescaleDenominator);
-  
   int HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v16;
-//  int HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v16_PrescaleNumerator;
-//  int HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v16_PrescaleDenominator;
   int HLT_HIUPC_ZDC1nOR_MinPixelCluster400_MaxPixelCluster10000_v16;
-//  int HLT_HIUPC_ZDC1nOR_MinPixelCluster400_MaxPixelCluster10000_v16_PrescaleNumerator;
-//  int HLT_HIUPC_ZDC1nOR_MinPixelCluster400_MaxPixelCluster10000_v16_PrescaleDenominator;
   CheckAndSetBranch(tree, HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v16);
-//  CheckAndSetBranch(tree, HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v16_PrescaleNumerator);
-//  CheckAndSetBranch(tree, HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v16_PrescaleDenominator);
   CheckAndSetBranch(tree, HLT_HIUPC_ZDC1nOR_MinPixelCluster400_MaxPixelCluster10000_v16);
-//  CheckAndSetBranch(tree, HLT_HIUPC_ZDC1nOR_MinPixelCluster400_MaxPixelCluster10000_v16_PrescaleNumerator);
-//  CheckAndSetBranch(tree, HLT_HIUPC_ZDC1nOR_MinPixelCluster400_MaxPixelCluster10000_v16_PrescaleDenominator);
-  
   int HLT_HIUPC_ZeroBias_SinglePixelTrack_MaxPixelTrack_v16;
-//  int HLT_HIUPC_ZeroBias_SinglePixelTrack_MaxPixelTrack_v16_PrescaleNumerator;
-//  int HLT_HIUPC_ZeroBias_SinglePixelTrack_MaxPixelTrack_v16_PrescaleDenominator;
   int HLT_HIUPC_ZDC1nOR_SinglePixelTrack_MaxPixelTrack_v16;
-//  int HLT_HIUPC_ZDC1nOR_SinglePixelTrack_MaxPixelTrack_v16_PrescaleNumerator;
-//  int HLT_HIUPC_ZDC1nOR_SinglePixelTrack_MaxPixelTrack_v16_PrescaleDenominator;
   CheckAndSetBranch(tree, HLT_HIUPC_ZeroBias_SinglePixelTrack_MaxPixelTrack_v16);
-//  CheckAndSetBranch(tree, HLT_HIUPC_ZeroBias_SinglePixelTrack_MaxPixelTrack_v16_PrescaleNumerator);
-//  CheckAndSetBranch(tree, HLT_HIUPC_ZeroBias_SinglePixelTrack_MaxPixelTrack_v16_PrescaleDenominator);
   CheckAndSetBranch(tree, HLT_HIUPC_ZDC1nOR_SinglePixelTrack_MaxPixelTrack_v16);
-//  CheckAndSetBranch(tree, HLT_HIUPC_ZDC1nOR_SinglePixelTrack_MaxPixelTrack_v16_PrescaleNumerator);
-//  CheckAndSetBranch(tree, HLT_HIUPC_ZDC1nOR_SinglePixelTrack_MaxPixelTrack_v16_PrescaleDenominator);
-  
   int HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15;
-//  int HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15_PrescaleNumerator;
-//  int HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15_PrescaleDenominator;
   int HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15;
-//  int HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15_PrescaleNumerator;
-//  int HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15_PrescaleDenominator;
   CheckAndSetBranch(tree, HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15);
-//  CheckAndSetBranch(tree, HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15_PrescaleNumerator);
-//  CheckAndSetBranch(tree, HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15_PrescaleDenominator);
   CheckAndSetBranch(tree, HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15);
-//  CheckAndSetBranch(tree, HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15_PrescaleNumerator);
-//  CheckAndSetBranch(tree, HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15_PrescaleDenominator);
+  
+  // ntDkpi
+//  #define DMAX 20000
+//  int Dsize;
+//  float* Dpt            = new float[DMAX];
+//  float* Dy             = new float[DMAX];
+//  float* Dmass          = new float[DMAX];
+//  float* Dalpha         = new float[DMAX];
+//  float* Ddtheta        = new float[DMAX];
+//  float* Dchi2cl        = new float[DMAX];
+//  float* DsvpvDistance  = new float[DMAX];
+//  float* DsvpvDisErr    = new float[DMAX];
+//  float* Dtrk1Pt        = new float[DMAX];
+//  float* Dtrk1Eta       = new float[DMAX];
+//  float* Dtrk2Pt        = new float[DMAX];
+//  float* Dtrk2Eta       = new float[DMAX];
+//  CheckAndSetBranch(tree, Dsize);
+//  CheckAndSetBranch(tree, Dpt);
+//  CheckAndSetBranch(tree, Dy);
+//  CheckAndSetBranch(tree, Dmass);
+//  CheckAndSetBranch(tree, Dalpha);
+//  CheckAndSetBranch(tree, Ddtheta);
+//  CheckAndSetBranch(tree, Dchi2cl);
+//  CheckAndSetBranch(tree, DsvpvDistance);
+//  CheckAndSetBranch(tree, Dtrk1Pt);
+//  CheckAndSetBranch(tree, Dtrk1Eta);
+//  CheckAndSetBranch(tree, Dtrk2Pt);
+//  CheckAndSetBranch(tree, Dtrk2Eta);
 
   TH1D* RateTemplate = new TH1D(
     "RateTemplate",
@@ -191,6 +199,39 @@ int main(
   LabelHLTHist(hSingleTrack_MaxTrack_gammaN, "HLT_SinglePixelTrack_MaxPixelTrack", "gammaN", "Ngamma");
   LabelHLTHist(hSingleTrack_MaxPix400_gammaN, "HLT_SinglePixelTrackLowPt_MaxPixelCluster400", "gammaN", "Ngamma");
   LabelHLTHist(hMin400Max10000_STMP400_gammaN, "HLT_MinPix400_MaxPix10000 OR HLT_SinPixTrkLowPt_MaxPix400", "gammaN", "Ngamma");
+  // CCFilter
+  TH1D* hMax10000_CCFilter                = (TH1D*) RateTemplate->Clone("hMax10000_CCFilter");
+  TH1D* hMin400_Max10000_CCFilter         = (TH1D*) RateTemplate->Clone("hMin400_Max10000_CCFilter");
+  TH1D* hSingleTrack_MaxTrack_CCFilter    = (TH1D*) RateTemplate->Clone("hSingleTrack_MaxTrack_CCFilter");
+  TH1D* hSingleTrack_MaxPix400_CCFilter   = (TH1D*) RateTemplate->Clone("hSingleTrack_MaxPix400_CCFilter");
+  TH1D* hMin400Max10000_STMP400_CCFilter  = (TH1D*) RateTemplate->Clone("hMin400Max10000_STMP400_CCFilter");
+  LabelHLTHist(hMax10000_CCFilter, "HLT_MaxPixelCluster10000", "gammaN", "Ngamma");
+  LabelHLTHist(hMin400_Max10000_CCFilter, "HLT_MinPixelCluster400_MaxPixelCluster10000", "gammaN", "Ngamma");
+  LabelHLTHist(hSingleTrack_MaxTrack_CCFilter, "HLT_SinglePixelTrack_MaxPixelTrack", "gammaN", "Ngamma");
+  LabelHLTHist(hSingleTrack_MaxPix400_CCFilter, "HLT_SinglePixelTrackLowPt_MaxPixelCluster400", "gammaN", "Ngamma");
+  LabelHLTHist(hMin400Max10000_STMP400_CCFilter, "HLT_MinPix400_MaxPix10000 OR HLT_SinPixTrkLowPt_MaxPix400", "gammaN", "Ngamma");
+  // PVFilter
+  TH1D* hMax10000_PVFilter                = (TH1D*) RateTemplate->Clone("hMax10000_PVFilter");
+  TH1D* hMin400_Max10000_PVFilter         = (TH1D*) RateTemplate->Clone("hMin400_Max10000_PVFilter");
+  TH1D* hSingleTrack_MaxTrack_PVFilter    = (TH1D*) RateTemplate->Clone("hSingleTrack_MaxTrack_PVFilter");
+  TH1D* hSingleTrack_MaxPix400_PVFilter   = (TH1D*) RateTemplate->Clone("hSingleTrack_MaxPix400_PVFilter");
+  TH1D* hMin400Max10000_STMP400_PVFilter  = (TH1D*) RateTemplate->Clone("hMin400Max10000_STMP400_PVFilter");
+  LabelHLTHist(hMax10000_PVFilter, "HLT_MaxPixelCluster10000", "gammaN", "Ngamma");
+  LabelHLTHist(hMin400_Max10000_PVFilter, "HLT_MinPixelCluster400_MaxPixelCluster10000", "gammaN", "Ngamma");
+  LabelHLTHist(hSingleTrack_MaxTrack_PVFilter, "HLT_SinglePixelTrack_MaxPixelTrack", "gammaN", "Ngamma");
+  LabelHLTHist(hSingleTrack_MaxPix400_PVFilter, "HLT_SinglePixelTrackLowPt_MaxPixelCluster400", "gammaN", "Ngamma");
+  LabelHLTHist(hMin400Max10000_STMP400_PVFilter, "HLT_MinPix400_MaxPix10000 OR HLT_SinPixTrkLowPt_MaxPix400", "gammaN", "Ngamma");
+  // D0Sel
+  TH1D* hMax10000_D0Sel                = (TH1D*) RateTemplate->Clone("hMax10000_D0Sel");
+  TH1D* hMin400_Max10000_D0Sel         = (TH1D*) RateTemplate->Clone("hMin400_Max10000_D0Sel");
+  TH1D* hSingleTrack_MaxTrack_D0Sel    = (TH1D*) RateTemplate->Clone("hSingleTrack_MaxTrack_D0Sel");
+  TH1D* hSingleTrack_MaxPix400_D0Sel   = (TH1D*) RateTemplate->Clone("hSingleTrack_MaxPix400_D0Sel");
+  TH1D* hMin400Max10000_STMP400_D0Sel  = (TH1D*) RateTemplate->Clone("hMin400Max10000_STMP400_D0Sel");
+  LabelHLTHist(hMax10000_D0Sel, "HLT_MaxPixelCluster10000", "gammaN", "Ngamma");
+  LabelHLTHist(hMin400_Max10000_D0Sel, "HLT_MinPixelCluster400_MaxPixelCluster10000", "gammaN", "Ngamma");
+  LabelHLTHist(hSingleTrack_MaxTrack_D0Sel, "HLT_SinglePixelTrack_MaxPixelTrack", "gammaN", "Ngamma");
+  LabelHLTHist(hSingleTrack_MaxPix400_D0Sel, "HLT_SinglePixelTrackLowPt_MaxPixelCluster400", "gammaN", "Ngamma");
+  LabelHLTHist(hMin400Max10000_STMP400_D0Sel, "HLT_MinPix400_MaxPix10000 OR HLT_SinPixTrkLowPt_MaxPix400", "gammaN", "Ngamma");
   
   TH1D* ZDCTemplate = new TH1D(
     "ZDCTemplate",
@@ -261,13 +302,6 @@ int main(
   hTrkVtx_Min400Max10000_STMP400_ZB_ZDCm->SetTitle("HLT_MinPix400_MaxPix10000 OR HLT_SinPixTrkLowPt_MaxPix400;nTrk;nVtx");
   hTrkVtx_Min400Max10000_STMP400_ZB_ZDCp->SetTitle("HLT_MinPix400_MaxPix10000 OR HLT_SinPixTrkLowPt_MaxPix400;nTrk;nVtx");
   
-  TH2D* TrkEtaVtxTemplate = new TH2D(
-    "TrkVtxTemplate",
-    ";Track eta;nVtx",
-    500, 0, 1000,
-    10, 0, 10
-  );
-  
   long int entries = tree->GetEntries();
   for (long int i = 0; i < entries; i++) {
     tree->GetEntry(i);
@@ -333,6 +367,8 @@ int main(
     bool ZDCp_Xn = sumPlus  > ZDCPlusMax;
     bool HFm_Gap = hiHFMinus_pf < HFMinusMax;
     bool HFp_Gap = hiHFPlus_pf  < HFPlusMax;
+    bool gammaN = ZDCm_Xn && ZDCp_0n && HFp_Gap;
+    bool Ngamma = ZDCm_0n && ZDCp_Xn && HFm_Gap;
     
     if (ZDCm_Xn) {
       // ZeroBias
@@ -405,11 +441,11 @@ int main(
       if (HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15)  hSingleTrack_MaxPix400_Xn0n->Fill(0.5);
       if (HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15)   hSingleTrack_MaxPix400_Xn0n->Fill(2.5);
       if (HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v16 ||
-        HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15
-      ) hMin400Max10000_STMP400_Xn0n->Fill(0.5);
+          HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15
+        ) hMin400Max10000_STMP400_Xn0n->Fill(0.5);
       if (HLT_HIUPC_ZDC1nOR_MinPixelCluster400_MaxPixelCluster10000_v16 ||
-        HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15
-      ) hMin400Max10000_STMP400_Xn0n->Fill(2.5);
+          HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15
+        ) hMin400Max10000_STMP400_Xn0n->Fill(2.5);
     }
     if (ZDCm_0n && ZDCp_Xn) {
       if (HLT_HIUPC_ZeroBias_MaxPixelCluster10000_v5)                       hMax10000_Xn0n->Fill(1.5);
@@ -421,13 +457,16 @@ int main(
       if (HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15)  hSingleTrack_MaxPix400_Xn0n->Fill(1.5);
       if (HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15)   hSingleTrack_MaxPix400_Xn0n->Fill(3.5);
       if (HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v16 ||
-        HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15
-      ) hMin400Max10000_STMP400_Xn0n->Fill(1.5);
+          HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15
+        ) hMin400Max10000_STMP400_Xn0n->Fill(1.5);
       if (HLT_HIUPC_ZDC1nOR_MinPixelCluster400_MaxPixelCluster10000_v16 ||
-        HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15
-      ) hMin400Max10000_STMP400_Xn0n->Fill(3.5);
+          HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15
+        ) hMin400Max10000_STMP400_Xn0n->Fill(3.5);
     }
-    if (ZDCm_Xn && ZDCp_0n && HFp_Gap) {
+    
+    if (!gammaN && !Ngamma) continue;
+    
+    if (gammaN) {
       if (HLT_HIUPC_ZeroBias_MaxPixelCluster10000_v5)                       hMax10000_gammaN->Fill(0.5);
       if (HLT_HIUPC_ZDC1nOR_MaxPixelCluster10000_v5)                        hMax10000_gammaN->Fill(2.5);
       if (HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v16)   hMin400_Max10000_gammaN->Fill(0.5);
@@ -437,13 +476,13 @@ int main(
       if (HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15)  hSingleTrack_MaxPix400_gammaN->Fill(0.5);
       if (HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15)   hSingleTrack_MaxPix400_gammaN->Fill(2.5);
       if (HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v16 ||
-        HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15
-      ) hMin400Max10000_STMP400_gammaN->Fill(0.5);
+          HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15
+        ) hMin400Max10000_STMP400_gammaN->Fill(0.5);
       if (HLT_HIUPC_ZDC1nOR_MinPixelCluster400_MaxPixelCluster10000_v16 ||
-        HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15
-      ) hMin400Max10000_STMP400_gammaN->Fill(2.5);
+          HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15
+        ) hMin400Max10000_STMP400_gammaN->Fill(2.5);
     }
-    if (ZDCm_0n && ZDCp_Xn && HFm_Gap) {
+    if (Ngamma) {
       if (HLT_HIUPC_ZeroBias_MaxPixelCluster10000_v5)                       hMax10000_gammaN->Fill(1.5);
       if (HLT_HIUPC_ZDC1nOR_MaxPixelCluster10000_v5)                        hMax10000_gammaN->Fill(3.5);
       if (HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v16)   hMin400_Max10000_gammaN->Fill(1.5);
@@ -453,12 +492,129 @@ int main(
       if (HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15)  hSingleTrack_MaxPix400_gammaN->Fill(1.5);
       if (HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15)   hSingleTrack_MaxPix400_gammaN->Fill(3.5);
       if (HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v16 ||
-        HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15
-      ) hMin400Max10000_STMP400_gammaN->Fill(1.5);
+          HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15
+        ) hMin400Max10000_STMP400_gammaN->Fill(1.5);
       if (HLT_HIUPC_ZDC1nOR_MinPixelCluster400_MaxPixelCluster10000_v16 ||
-        HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15
-      ) hMin400Max10000_STMP400_gammaN->Fill(3.5);
+          HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15
+        ) hMin400Max10000_STMP400_gammaN->Fill(3.5);
     }
+    
+    if (pclusterCompatibilityFilter) {
+      if (HLT_HIUPC_ZeroBias_MaxPixelCluster10000_v5) {
+        if (gammaN) hMax10000_CCFilter->Fill(0.5);
+        if (Ngamma) hMax10000_CCFilter->Fill(1.5);
+      }
+      if (HLT_HIUPC_ZDC1nOR_MaxPixelCluster10000_v5) {
+        if (gammaN) hMax10000_CCFilter->Fill(2.5);
+        if (Ngamma) hMax10000_CCFilter->Fill(3.5);
+      }
+      if (HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v16) {
+        if (gammaN) hMin400_Max10000_CCFilter->Fill(0.5);
+        if (Ngamma) hMin400_Max10000_CCFilter->Fill(1.5);
+      }
+      if (HLT_HIUPC_ZDC1nOR_MinPixelCluster400_MaxPixelCluster10000_v16) {
+        if (gammaN) hMin400_Max10000_CCFilter->Fill(2.5);
+        if (Ngamma) hMin400_Max10000_CCFilter->Fill(3.5);
+      }
+      if (HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15) {
+        if (gammaN) hSingleTrack_MaxPix400_CCFilter->Fill(0.5);
+        if (Ngamma) hSingleTrack_MaxPix400_CCFilter->Fill(1.5);
+      }
+      if (HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15) {
+        if (gammaN) hSingleTrack_MaxPix400_CCFilter->Fill(2.5);
+        if (Ngamma) hSingleTrack_MaxPix400_CCFilter->Fill(3.5);
+      }
+      if (HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v16 ||
+          HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15) {
+        if (gammaN) hMin400Max10000_STMP400_CCFilter->Fill(0.5);
+        if (Ngamma) hMin400Max10000_STMP400_CCFilter->Fill(1.5);
+      }
+      if (HLT_HIUPC_ZDC1nOR_MinPixelCluster400_MaxPixelCluster10000_v16 ||
+          HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15) {
+        if (gammaN) hMin400Max10000_STMP400_CCFilter->Fill(2.5);
+        if (Ngamma) hMin400Max10000_STMP400_CCFilter->Fill(3.5);
+      }
+    }
+    if (pprimaryVertexFilter) {
+      if (HLT_HIUPC_ZeroBias_MaxPixelCluster10000_v5) {
+        if (gammaN) hMax10000_PVFilter->Fill(0.5);
+        if (Ngamma) hMax10000_PVFilter->Fill(1.5);
+      }
+      if (HLT_HIUPC_ZDC1nOR_MaxPixelCluster10000_v5) {
+        if (gammaN) hMax10000_PVFilter->Fill(2.5);
+        if (Ngamma) hMax10000_PVFilter->Fill(3.5);
+      }
+      if (HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v16) {
+        if (gammaN) hMin400_Max10000_PVFilter->Fill(0.5);
+        if (Ngamma) hMin400_Max10000_PVFilter->Fill(1.5);
+      }
+      if (HLT_HIUPC_ZDC1nOR_MinPixelCluster400_MaxPixelCluster10000_v16) {
+        if (gammaN) hMin400_Max10000_PVFilter->Fill(2.5);
+        if (Ngamma) hMin400_Max10000_PVFilter->Fill(3.5);
+      }
+      if (HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15) {
+        if (gammaN) hSingleTrack_MaxPix400_PVFilter->Fill(0.5);
+        if (Ngamma) hSingleTrack_MaxPix400_PVFilter->Fill(1.5);
+      }
+      if (HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15) {
+        if (gammaN) hSingleTrack_MaxPix400_PVFilter->Fill(2.5);
+        if (Ngamma) hSingleTrack_MaxPix400_PVFilter->Fill(3.5);
+      }
+      if (HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v16 ||
+          HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15) {
+        if (gammaN) hMin400Max10000_STMP400_PVFilter->Fill(0.5);
+        if (Ngamma) hMin400Max10000_STMP400_PVFilter->Fill(1.5);
+      }
+      if (HLT_HIUPC_ZDC1nOR_MinPixelCluster400_MaxPixelCluster10000_v16 ||
+          HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15) {
+        if (gammaN) hMin400Max10000_STMP400_PVFilter->Fill(2.5);
+        if (Ngamma) hMin400Max10000_STMP400_PVFilter->Fill(3.5);
+      }
+    }
+    
+//    bool passD0 = false;
+//    for (int j = 0; j < Dsize; j++) {
+//    }
+//    
+//    if () {
+//      if (HLT_HIUPC_ZeroBias_MaxPixelCluster10000_v5) {
+//        if (gammaN) hMax10000_gammaN->Fill(0.5);
+//        if (Ngamma) hMax10000_gammaN->Fill(1.5);
+//      }
+//      if (HLT_HIUPC_ZDC1nOR_MaxPixelCluster10000_v5) {
+//        if (gammaN) hMax10000_gammaN->Fill(2.5);
+//        if (Ngamma) hMax10000_gammaN->Fill(3.5);
+//      }
+//      
+//      if (HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v16) {
+//        if (gammaN) hMin400_Max10000_gammaN->Fill(0.5);
+//        if (Ngamma) hMin400_Max10000_gammaN->Fill(1.5);
+//      }
+//      if (HLT_HIUPC_ZDC1nOR_MinPixelCluster400_MaxPixelCluster10000_v16) {
+//        if (gammaN) hMin400_Max10000_gammaN->Fill(2.5);
+//        if (Ngamma) hMin400_Max10000_gammaN->Fill(3.5);
+//      }
+//      
+//      if (HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15) {
+//        if (gammaN) hSingleTrack_MaxPix400_gammaN->Fill(0.5);
+//        if (Ngamma) hSingleTrack_MaxPix400_gammaN->Fill(1.5);
+//      }
+//      if (HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15) {
+//        if (gammaN) hSingleTrack_MaxPix400_gammaN->Fill(2.5);
+//        if (Ngamma) hSingleTrack_MaxPix400_gammaN->Fill(3.5);
+//      }
+//      
+//      if (HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v16 ||
+//          HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v15) {
+//        if (gammaN) hMin400Max10000_STMP400_gammaN->Fill(0.5);
+//        if (Ngamma) hMin400Max10000_STMP400_gammaN->Fill(1.5);
+//      }
+//      if (HLT_HIUPC_ZDC1nOR_MinPixelCluster400_MaxPixelCluster10000_v16 ||
+//          HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v15) {
+//        if (gammaN) hMin400Max10000_STMP400_gammaN->Fill(2.5);
+//        if (Ngamma) hMin400Max10000_STMP400_gammaN->Fill(3.5);
+//      }
+//    }
   } // end entries loop
   
   TFile* fout = TFile::Open(foutPath, "RECREATE");
@@ -481,6 +637,24 @@ int main(
   hSingleTrack_MaxTrack_gammaN->Write();
   hSingleTrack_MaxPix400_gammaN->Write();
   hMin400Max10000_STMP400_gammaN->Write();
+  
+  hMax10000_CCFilter->Write();
+  hMin400_Max10000_CCFilter->Write();
+  hSingleTrack_MaxTrack_CCFilter->Write();
+  hSingleTrack_MaxPix400_CCFilter->Write();
+  hMin400Max10000_STMP400_CCFilter->Write();
+  
+  hMax10000_PVFilter->Write();
+  hMin400_Max10000_PVFilter->Write();
+  hSingleTrack_MaxTrack_PVFilter->Write();
+  hSingleTrack_MaxPix400_PVFilter->Write();
+  hMin400Max10000_STMP400_PVFilter->Write();
+  
+  hMax10000_D0Sel->Write();
+  hMin400_Max10000_D0Sel->Write();
+  hSingleTrack_MaxTrack_D0Sel->Write();
+  hSingleTrack_MaxPix400_D0Sel->Write();
+  hMin400Max10000_STMP400_D0Sel->Write();
   
   hZDCp_Max10000_ZB->Write();
   hZDCm_Max10000_ZB->Write();
