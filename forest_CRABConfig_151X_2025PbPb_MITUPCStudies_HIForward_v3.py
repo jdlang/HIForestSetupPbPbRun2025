@@ -9,10 +9,10 @@ username = getUsername()
 ###############################################################################
 # INPUT/OUTPUT SETTINGS
 
-pd = '8'
+pd = '0'
 run = '399658-399662'
-jobTag = 'PbPbUPC_HIForward' + pd + '_' + run
-cmsswConfig = 'forest_CMSSWConfig_Run3_151X_2025PbPb_MITUPCStudies_v2.py'
+jobTag = 'PbPbUPC_HIForward' + pd + '_' + run + '_QuickAnalysis'
+cmsswConfig = 'forest_CMSSWConfig_Run3_151X_2025PbPb_MITUPCStudies_v3.py'
 
 isOnDAS = True
 # If isOnDAS == True, use these inputs:
@@ -35,6 +35,7 @@ config.General.transferOutputs = True
 config.JobType.psetName = cmsswConfig
 config.JobType.pluginName = 'Analysis'
 config.JobType.maxMemoryMB = 3000
+config.JobType.maxJobRuntimeMin = 120
 config.JobType.pyCfgParams = ['noprint']
 config.JobType.allowUndistributedCMSSW = True
 
@@ -44,7 +45,7 @@ if isOnDAS :
     config.Data.lumiMask = '/afs/cern.ch/user/j/jdlang/public/2025PbPb_DCS_20251118.json'
     config.Data.runRange = run
     config.Data.splitting = 'EventAwareLumiBased'
-    config.Data.unitsPerJob = 500
+    config.Data.unitsPerJob = 2000
     config.Data.totalUnits = -1
 else :
     config.Data.outputPrimaryDataset = jobTag
