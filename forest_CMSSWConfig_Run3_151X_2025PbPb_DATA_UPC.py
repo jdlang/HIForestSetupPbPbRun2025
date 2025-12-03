@@ -15,7 +15,7 @@ INPUT_MAX_EVENTS    = 200
 OUTPUT_FILE_NAME    = "HiForest_2025PbPbUPC.root"
 
 INCLUDE_CENTRALITY  = False
-INCLUDE_DFINDER     = False
+INCLUDE_DFINDER     = True
 _includeD0          = 1     # 1 if true, 0 if false
 _includeLcpKpi      = 0     # 1 if true, 0 if false
 _includeLcpKs       = 0     # 1 if true, 0 if false
@@ -34,7 +34,7 @@ _jetAbsEtaMaxCS     = 5
 _jetLabelsCS        = ["4"] # R-values for collections of CS subtracted jets (only eta dependent background)
 _jetLabelsFlowCS    = ["4"] # R-values for flow subtracted CS jets (eta and phi dependent background)
 INCLUDE_L1_OBJ      = True
-INCLUDE_MUONS       = False
+INCLUDE_MUONS       = True
 INCLUDE_PF_TREE     = False
 _pfPtMin            = 0.1
 _pfAbsEtaMax        = 6.0
