@@ -1,5 +1,5 @@
 # 2025 CMS PbPb Run - Foresting
-**Last updated: 29 October 2025**
+**Last updated: 3 December 2025**
 
 * **Overview of Config Files**
 * **1A) Setup for Low-PU pp**
@@ -97,8 +97,8 @@ git pull upstream main
 
 ### 1.1) Install CMSSW
 ```bash
-cmsrel CMSSW_15_1_0_patch3
-cd CMSSW_15_1_0_patch3/src
+cmsrel CMSSW_15_1_0_patch4
+cd CMSSW_15_1_0_patch4/src
 cmsenv
 ```
 
@@ -300,7 +300,7 @@ crab resubmit --maxmemory 3000 --maxruntime 450 -d <path/to/crab_status_director
 
 ## Updating "forest_CMSSW_15_X_X"
 This process should work for any branch of the `cmshi/cmssw.git` repo.
-The example below uses forest_CMSSW_15_1_X:
+The example below uses forest_CMSSW_15_1_0:
 ```bash
 cd CMSSW_15_1_0/src/HeavyIonsAnalysis/
 git config pull.rebase true
