@@ -14,20 +14,18 @@ process = cms.Process('HiForest', Run3_pp_on_PbPb_2025)
 
 HIFOREST_VERSION = "151X"
 GLOBAL_TAG = "151X_dataRun3_Prompt_v1"
-INPUT_TEST_FILE = "/store/hidata/HIRun2025A/HIForward0/MINIAOD/PromptReco-v1/000/399/540/00000/2a265da4-34ef-43c7-8502-236cc5dc5ac1.root"
+INPUT_TEST_FILE = "root://eoscms.cern.ch//eos/cms/store/hidata/HIRun2025A/HIForward2/MINIAOD/PromptReco-v1/000/399/660/00000/bfaa8b34-3989-4ae1-a291-84e41b623a71.root"
 INPUT_MAX_EVENTS    = 1000
 OUTPUT_FILE_NAME    = "HiForest_2025PbPbUPC.root"
 
 INCLUDE_CENTRALITY  = False
 INCLUDE_DFINDER     = True
-_DtkPtMin           = 0.1
-_DtkEtaMax          = 2.4
 INCLUDE_EGAMMA      = False
 INCLUDE_FSC         = True
 INCLUDE_HLT_OBJ     = False
 INCLUDE_HLTFILTER   = True
 INCLUDE_JETS        = True # ak Jets
-_jetPtMin           = 10
+_jetPtMin           = 15
 _jetAbsEtaMax       = 5.2
 _jetLabels          = ["0"] # "0" uses reco jets, otherwise recluster with R value, e.g. 3,4,8
 INCLUDE_CSJETS      = False # akCS Jets
@@ -291,7 +289,7 @@ if INCLUDE_DFINDER :
     GenLabel      = 'prunedGenParticles'
     from Bfinder.finderMaker.finderMaker_75X_cff import finderMaker_75X,setCutForAllChannelsDfinder
     finderMaker_75X(process, runOnMC, VtxLabel, TrkLabel, TrkChi2Label, GenLabel)
-    process.Dfinder.tkPtCut = cms.double(0.05) # before fit
+    process.Dfinder.tkPtCut = cms.double(0.1) # before fit
     process.Dfinder.tkEtaCut = cms.double(2.4) # before fit
     process.Dfinder.Dchannel = cms.vint32(
         1, # K+pi- : D0bar
@@ -308,8 +306,8 @@ if INCLUDE_DFINDER :
         0, # D0bar(K+pi+pi-pi-)pi- : D-*
         0, # D0bar(K+pi+)pi+ : B+
         0, # D0(K-pi+)pi- : B-
-        1, # p+k-pi+: lambdaC+
-        1, # p-k+pi-: lambdaCbar-
+        0, # p+k-pi+: lambdaC+
+        0, # p-k+pi-: lambdaCbar-
         1,  # p+Ks(pi+pi-): lambdaC+
         1   # p-Ks(pi+pi-): lambdaCbar-
     )
@@ -322,14 +320,14 @@ if INCLUDE_DFINDER :
     )
     process.Dfinder.dPtCut = cms.vdouble( # Accept if > dPtCut
         0.,  0.,    # K+pi- : D0bar
-        0.,  0.,    # K-pi+pi+ : D+
+        1.9, 1.9,   # K-pi+pi+ : D+
         0.,  0.,    # K-pi-pi+pi+ : D0
         0.,  0.,    # K+K-(Phi)pi+ : Ds+
         0.,  0.,    # D0(K-pi+)pi+ : D+*
         0.,  0.,    # D0(K-pi-pi+pi+)pi+ : D+*
         0.,  0.,    # D0bar(K+pi+)pi+ : B+
-        0.8, 0.8,   # p+k-pi+: lambdaC+
-        0.8, 0.8    # p+Ks(pi+pi-): lambdaC+
+        0.,  0.,    # p+k-pi+: lambdaC+
+        1.9, 1.9    # p+Ks(pi+pi-): lambdaC+
     )
     process.Dfinder.printInfo = cms.bool(False)
     process.Dfinder.dropUnusedTracks = cms.bool(True)
@@ -343,10 +341,10 @@ process.pclusterCompatibilityFilter = cms.Path(process.clusterCompatibilityFilte
 process.pprimaryVertexFilter = cms.Path(process.primaryVertexFilter)
 process.load('HeavyIonsAnalysis.EventAnalysis.hffilterPF_cfi')
 process.pAna = cms.EndPath(process.skimanalysis)
-#process.filterSequence = cms.Sequence(
-#    process.clusterCompatibilityFilter +
-#    process.primaryVertexFilter
-#)
+process.filterSequence = cms.Sequence(
+    process.clusterCompatibilityFilter +
+    process.primaryVertexFilter
+)
 
 # HLT Filter
 if INCLUDE_HLTFILTER :
@@ -447,7 +445,7 @@ if INCLUDE_HLTFILTER :
             "HLT_HIUPC_ZDC1nXOR_MBHF1AsymXOR_SameSide_PixelTrackMultiplicity20_v*"
         ]
     )
-    process.filterSequence = cms.Sequence(process.hltfilter)
+    process.filterSequence += process.hltfilter
 
 process.superFilterPath = cms.Path(process.filterSequence)
 process.skimanalysis.superFilters = cms.vstring('superFilterPath')
