@@ -5,9 +5,6 @@
 # SW: CMSSW_15_1_0_patch3, forest_CMSSW_15_1_X, Dfinder_14XX_miniAOD
 
 import FWCore.ParameterSet.Config as cms
-#from Configuration.Eras.Era_Run3_2025_UPC_cff import Run3_2025_UPC
-#process = cms.Process('HiForest', Run3_2025_UPC)
-
 from Configuration.Eras.Era_Run3_pp_on_PbPb_2025_cff import Run3_pp_on_PbPb_2025
 process = cms.Process('HiForest', Run3_pp_on_PbPb_2025)
 
@@ -15,7 +12,7 @@ process = cms.Process('HiForest', Run3_pp_on_PbPb_2025)
 HIFOREST_VERSION = "151X"
 GLOBAL_TAG = "151X_dataRun3_Prompt_v1"
 INPUT_TEST_FILE = "root://eoscms.cern.ch//eos/cms/store/hidata/HIRun2025A/HIForward2/MINIAOD/PromptReco-v1/000/399/660/00000/bfaa8b34-3989-4ae1-a291-84e41b623a71.root"
-INPUT_MAX_EVENTS    = 1000
+INPUT_MAX_EVENTS    = 10000
 OUTPUT_FILE_NAME    = "HiForest_2025PbPbUPC.root"
 
 INCLUDE_CENTRALITY  = False
@@ -237,47 +234,6 @@ if INCLUDE_JETS :
             getattr(process,"ak"+jetLabel+"PFJetAnalyzer").pfUnifiedParticleTransformerAK4JetTags = cms.untracked.string("pfUnifiedParticleTransformerAK4JetTagsAK"+jetLabel+"PFCHSBtag")
         process.forest += getattr(process,"ak"+jetLabel+"PFJetAnalyzer")
 
-# akCS Jets
-if INCLUDE_CSJETS :
-    process.load('HeavyIonsAnalysis.JetAnalysis.akCs4PFJetSequence_pponPbPb_data_cff')
-    # Select the types of jets filled
-    matchJets = False             # Enables q/g and heavy flavor jet identification in MC
-    # Choose which additional information is added to jet trees
-    doHIJetID = True             # Fill jet ID and composition information branches
-    doWTARecluster = True        # Add jet phi and eta for WTA axis
-    doBtagging  =  False         # Note that setting to True increases computing time a lot
-    # Combine the two lists such that all selected jets can be easily looped over
-    # Also add "Flow" tag for the flow jets to distinguish them from non-flow jets
-    allJetLabels = _jetLabelsCS + [flowR + "Flow" for flowR in _jetLabelsFlowCS]
-    # add candidate tagging
-    from HeavyIonsAnalysis.JetAnalysis.setupJets_PbPb_cff import candidateBtaggingMiniAOD
-
-    for jetLabel in allJetLabels:
-        candidateBtaggingMiniAOD(
-            process,
-            isMC = False,
-            jetPtMin = _jetPtMinCS,
-            jetCorrLevels = ['L2Relative', 'L2L3Residual'],
-            doBtagging = doBtagging,
-            labelR = jetLabel
-        )
-        # setup jet analyzer
-        setattr(process,"akCs"+jetLabel+"PFJetAnalyzer",process.akCs4PFJetAnalyzer.clone())
-        getattr(process,"akCs"+jetLabel+"PFJetAnalyzer").jetTag = "selectedUpdatedPatJetsAK"+jetLabel+"PFBtag"
-        getattr(process,"akCs"+jetLabel+"PFJetAnalyzer").jetName = 'akCs'+jetLabel+'PF'
-        getattr(process,"akCs"+jetLabel+"PFJetAnalyzer").matchJets = matchJets
-        getattr(process,"akCs"+jetLabel+"PFJetAnalyzer").matchTag = 'patJetsAK'+jetLabel+'PFUnsubJets'
-        getattr(process,"akCs"+jetLabel+"PFJetAnalyzer").doBtagging = doBtagging
-        getattr(process,"akCs"+jetLabel+"PFJetAnalyzer").doHiJetID = doHIJetID
-        getattr(process,"akCs"+jetLabel+"PFJetAnalyzer").doWTARecluster = doWTARecluster
-        getattr(process,"akCs"+jetLabel+"PFJetAnalyzer").jetPtMin = _jetPtMinCS
-        getattr(process,"akCs"+jetLabel+"PFJetAnalyzer").jetAbsEtaMax = cms.untracked.double(_jetAbsEtaMaxCS)
-        getattr(process,"akCs"+jetLabel+"PFJetAnalyzer").rParam = 0.4 if jetLabel=="0" else float(jetLabel.replace("Flow",""))*0.1
-        if doBtagging:
-            getattr(process,"akCs"+jetLabel+"PFJetAnalyzer").pfJetProbabilityBJetTag = cms.untracked.string("pfJetProbabilityBJetTagsAK"+jetLabel+"PFBtag")
-            getattr(process,"akCs"+jetLabel+"PFJetAnalyzer").pfUnifiedParticleTransformerAK4JetTags = cms.untracked.string("pfUnifiedParticleTransformerAK4JetTagsAK"+jetLabel+"PFBtag")
-        process.forest += getattr(process,"akCs"+jetLabel+"PFJetAnalyzer")
-
 ###############################################################################
 
 # D finder
@@ -341,10 +297,10 @@ process.pclusterCompatibilityFilter = cms.Path(process.clusterCompatibilityFilte
 process.pprimaryVertexFilter = cms.Path(process.primaryVertexFilter)
 process.load('HeavyIonsAnalysis.EventAnalysis.hffilterPF_cfi')
 process.pAna = cms.EndPath(process.skimanalysis)
-process.filterSequence = cms.Sequence(
-    process.clusterCompatibilityFilter +
-    process.primaryVertexFilter
-)
+#process.filterSequence = cms.Sequence(
+#    process.clusterCompatibilityFilter +
+#    process.primaryVertexFilter
+#)
 
 # HLT Filter
 if INCLUDE_HLTFILTER :
@@ -445,13 +401,15 @@ if INCLUDE_HLTFILTER :
             "HLT_HIUPC_ZDC1nXOR_MBHF1AsymXOR_SameSide_PixelTrackMultiplicity20_v*"
         ]
     )
-    process.filterSequence += process.hltfilter
+    process.filterSequence = cms.Sequence(
+        process.hltfilter +
+        process.primaryVertexFilter
+    )
 
 process.superFilterPath = cms.Path(process.filterSequence)
 process.skimanalysis.superFilters = cms.vstring('superFilterPath')
 for path in process.paths:
    getattr(process, path)._seq = process.filterSequence * getattr(process,path)._seq
-#process.pAna = cms.EndPath(process.skimanalysis)
 
 if DEBUG :
     process.SimpleMemoryCheck = cms.Service('SimpleMemoryCheck',
