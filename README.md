@@ -16,28 +16,14 @@
 
 ## Overview of Config Files
 
-### Low-PU pp Configs (use with CMSSW_15_0_X)
+### 2025 PbPb Configs (use with CMSSW_15_1_X)
 * **CMSSW**
-  * `forest_CMSSWConfig_Run3_150X_2025LowPUpp_DATA.py`
-* **CRAB**
-  * `forest_CRABConfig_150X_2025LowPUpp_DATA_SpecialHLTPhysics.py`
-  * `forest_CRABConfig_150X_2025LowPUpp_DATA_SpecialZeroBias.py`
-
-### PbPb Configs (use with CMSSW_15_1_X)
-* **CMSSW**
-  * `forest_CMSSWConfig_Run3_151X_2025PbPb_DATA.py`: Intended for general PbPb
-    data (i.e. not UPC).
-  * `forest_CMSSWConfig_Run3_151X_2025PbPb_DATA_CaloTower.py`: Same as general
-    PbPb data config but adds `L1CaloTowerTree`. Should only be used with
-    private reco miniAOD that includes L1CaloTower info.
-  * `forest_CMSSWConfig_Run3_151X_2025PbPb_DATA_UPC.py`: Specifically for
+  * `forest_CMSSWConfig_Run3_151X_2025PbPb_UPC_MITHIG.py`: Specifically for
     PbPb UPC data. Uses Dfinder (see **Setup for PbPb**). Also includes
     ZDC and FSC trees.
 * **CRAB**
-  * `forest_CRABConfig_151X_2025PbPb_DATA_ZeroBias.py`: CRAB template for
-    general PbPb data. Preset for ZeroBias PDs, modify for other PbPb data.
-  * `forest_CRABConfig_151X_2025PbPb_DATA_UPC_HIForward.py`: CRAB template for
-    UPC data from HIForward PDs. Modify for other UPC data.
+  * `forest_CRABConfig_151X_2025PbPb_UPC_MITHIG.py`: CRAB template for
+    UPC data from HIForward PDs.
 
 > [!TIP]
 > To test CMSSW configs, modify `INPUT_TEST_FILE` in the config and run with:
@@ -52,53 +38,12 @@
 
 --------------------------------------------------------------------------------
 
-## 1A) Setup for Low-PU pp
-
-> [!WARNING] 
-> Low-PU pp uses **CMSSW_15_0_X**, *not CMSSW_15_1_X* as in PbPb!
+## 1) Setup for PbPb
 
 ### 1.1) Install CMSSW
 ```bash
-cmsrel CMSSW_15_0_15_patch4
-cd CMSSW_15_0_15_patch4/src
-cmsenv
-```
-
-
-### 1.2) Add CMS Heavy Ion foresting tools
-```bash
-git cms-merge-topic CmsHI:forest_CMSSW_15_0_X
-scram build -j4
-```
-
-
-### 1.3) Clone this repository and add your remote repo
-**On github.com**, fork this repository to make your own version. This will be used
-to document your forest configs.
-
-Next, clone your forked version of this repo:
-```bash
-git clone git@github.com:<your_git_username>/HIForestSetupPbPbRun2025.git
-cd HIForestSetupPbPbRun2025/
-```
-
-Finally, add the original repo as an "upstream" repo:
-```bash
-git remote add upstream git@github.com:jdlang/HIForestSetupPbPbRun2025.git
-git fetch upstream
-git pull upstream main
-```
-
-
-
---------------------------------------------------------------------------------
-
-## 1B) Setup for PbPb
-
-### 1.1) Install CMSSW
-```bash
-cmsrel CMSSW_15_1_0_patch3
-cd CMSSW_15_1_0_patch3/src
+cmsrel CMSSW_15_1_0_patch4
+cd CMSSW_15_1_0_patch4/src
 cmsenv
 ```
 
