@@ -450,43 +450,67 @@ void PlotHltRates(
   hMin400Max10000_STMP400_gammaN->SetMinimum(0.1 * hMin400Max10000_STMP400_gammaN->GetMinimum(10));
   hMin400Max10000_STMP400_gammaN->SetMaximum(10  * hMin400Max10000_STMP400_gammaN->GetMaximum());
   
-  hMax10000_XnAn->Draw("hist text");
+  hMax10000_XnAn->SetLineColor(kBlack);
+  hMax10000_XnAn->SetLineWidth(2);
+  hSingleTrack_MaxTrack_XnAn->SetLineColor(kGray);
+  hMin400_Max10000_XnAn->SetLineColor(kPink-2);
+  hSingleTrack_MaxPix400_XnAn->SetLineColor(kAzure-2);
+  hMin400Max10000_STMP400_XnAn->SetLineColor(kViolet-2);
+  hMin400Max10000_STMP400_XnAn->SetLineWidth(2);
+  
+  hMax10000_Xn0n->SetLineColor(kBlack);
+  hMax10000_Xn0n->SetLineWidth(2);
+  hSingleTrack_MaxTrack_Xn0n->SetLineColor(kGray);
+  hMin400_Max10000_Xn0n->SetLineColor(kPink-2);
+  hSingleTrack_MaxPix400_Xn0n->SetLineColor(kAzure-2);
+  hMin400Max10000_STMP400_Xn0n->SetLineColor(kViolet-2);
+  hMin400Max10000_STMP400_Xn0n->SetLineWidth(2);
+  
+  hMax10000_gammaN->SetLineColor(kBlack);
+  hMax10000_gammaN->SetLineWidth(2);
+  hSingleTrack_MaxTrack_gammaN->SetLineColor(kGray);
+  hMin400_Max10000_gammaN->SetLineColor(kPink-2);
+  hSingleTrack_MaxPix400_gammaN->SetLineColor(kAzure-2);
+  hMin400Max10000_STMP400_gammaN->SetLineColor(kViolet-2);
+  hMin400Max10000_STMP400_gammaN->SetLineWidth(2);
+  
+  hMax10000_XnAn->Draw("hist text00");
   canvas2->SaveAs(foutPath + "triggerStudies_Max10000_XnAn.pdf");
-  hMin400_Max10000_XnAn->Draw("hist text");
+  hMin400_Max10000_XnAn->Draw("hist text00");
   canvas2->SaveAs(foutPath + "triggerStudies_Min400_Max10000_XnAn.pdf");
-  hSingleTrack_MaxTrack_XnAn->Draw("hist text");
+  hSingleTrack_MaxTrack_XnAn->Draw("hist text00");
   canvas2->SaveAs(foutPath + "triggerStudies_SingleTrack_MaxTrack_XnAn.pdf");
-  hSingleTrack_MaxPix400_XnAn->Draw("hist text");
+  hSingleTrack_MaxPix400_XnAn->Draw("hist text00");
   canvas2->SaveAs(foutPath + "triggerStudies_SingleTrack_MaxPix400_XnAn.pdf");
-  hMin400Max10000_STMP400_XnAn->Draw("hist text");
-  hMin400_Max10000_XnAn->Draw("same hist");
-  hSingleTrack_MaxPix400_XnAn->Draw("same hist");
+  hMin400Max10000_STMP400_XnAn->Draw("hist text00");
+  hMin400_Max10000_XnAn->Draw("same hist text00");
+  hSingleTrack_MaxPix400_XnAn->Draw("same hist text00");
   canvas2->SaveAs(foutPath + "triggerStudies_Min400Max10000_STMP400_XnAn.pdf");
   
-  hMax10000_Xn0n->Draw("hist text");
+  hMax10000_Xn0n->Draw("hist text00");
   canvas2->SaveAs(foutPath + "triggerStudies_Max10000_Xn0n.pdf");
-  hMin400_Max10000_Xn0n->Draw("hist text");
+  hMin400_Max10000_Xn0n->Draw("hist text00");
   canvas2->SaveAs(foutPath + "triggerStudies_Min400_Max10000_Xn0n.pdf");
-  hSingleTrack_MaxTrack_Xn0n->Draw("hist text");
+  hSingleTrack_MaxTrack_Xn0n->Draw("hist text00");
   canvas2->SaveAs(foutPath + "triggerStudies_SingleTrack_MaxTrack_Xn0n.pdf");
-  hSingleTrack_MaxPix400_Xn0n->Draw("hist text");
+  hSingleTrack_MaxPix400_Xn0n->Draw("hist text00");
   canvas2->SaveAs(foutPath + "triggerStudies_SingleTrack_MaxPix400_Xn0n.pdf");
-  hMin400Max10000_STMP400_Xn0n->Draw("hist text");
-  hMin400_Max10000_Xn0n->Draw("same hist");
-  hSingleTrack_MaxPix400_Xn0n->Draw("same hist");
+  hMin400Max10000_STMP400_Xn0n->Draw("hist text00");
+  hMin400_Max10000_Xn0n->Draw("same hist text00");
+  hSingleTrack_MaxPix400_Xn0n->Draw("same hist text00");
   canvas2->SaveAs(foutPath + "triggerStudies_Min400Max10000_STMP400_Xn0n.pdf");
   
-  hMax10000_gammaN->Draw("hist text");
+  hMax10000_gammaN->Draw("hist text00");
   canvas2->SaveAs(foutPath + "triggerStudies_Max10000_gammaN.pdf");
-  hMin400_Max10000_gammaN->Draw("hist text");
+  hMin400_Max10000_gammaN->Draw("hist text00");
   canvas2->SaveAs(foutPath + "triggerStudies_Min400_Max10000_gammaN.pdf");
-  hSingleTrack_MaxTrack_gammaN->Draw("hist text");
+  hSingleTrack_MaxTrack_gammaN->Draw("hist text00");
   canvas2->SaveAs(foutPath + "triggerStudies_SingleTrack_MaxTrack_gammaN.pdf");
-  hSingleTrack_MaxPix400_gammaN->Draw("hist text");
+  hSingleTrack_MaxPix400_gammaN->Draw("hist text00");
   canvas2->SaveAs(foutPath + "triggerStudies_SingleTrack_MaxPix400_gammaN.pdf");
-  hMin400Max10000_STMP400_gammaN->Draw("hist text");
-  hMin400_Max10000_gammaN->Draw("same hist");
-  hSingleTrack_MaxPix400_gammaN->Draw("same hist");
+  hMin400Max10000_STMP400_gammaN->Draw("hist text00");
+  hMin400_Max10000_gammaN->Draw("same hist text00");
+  hSingleTrack_MaxPix400_gammaN->Draw("same hist text00");
   canvas2->SaveAs(foutPath + "triggerStudies_Min400Max10000_STMP400_gammaN.pdf");
   
 //  TCanvas* canvas3 = new TCanvas("canvas3", "", 600, 1200);
