@@ -2,7 +2,7 @@
 # Collisions: 2025 PbPb UPC
 # Input: miniAOD
 # Type: data
-# SW: CMSSW_15_1_0_patch3, forest_CMSSW_15_1_X, Dfinder_14XX_miniAOD
+# SW: CMSSW_15_1_0_patch4, forest_CMSSW_15_1_X, Dfinder_14XX_miniAOD
 
 import FWCore.ParameterSet.Config as cms
 from Configuration.Eras.Era_Run3_pp_on_PbPb_2025_cff import Run3_pp_on_PbPb_2025
@@ -21,24 +21,11 @@ INCLUDE_EGAMMA      = False
 INCLUDE_FSC         = True
 INCLUDE_HLT_OBJ     = False
 INCLUDE_HLTFILTER   = True
-INCLUDE_JETS        = True # ak Jets
-_jetPtMin           = 15
-_jetAbsEtaMax       = 5.2
-_jetLabels          = ["0"] # "0" uses reco jets, otherwise recluster with R value, e.g. 3,4,8
-INCLUDE_CSJETS      = False # akCS Jets
-_jetPtMinCS         = 10
-_jetAbsEtaMaxCS     = 5.2
-_jetLabelsCS        = ["4"] # R-values for collections of CS subtracted jets (only eta dependent background)
-_jetLabelsFlowCS    = [] # R-values for flow subtracted CS jets (eta and phi dependent background)
+INCLUDE_PFJETS      = True
 INCLUDE_L1_OBJ      = False
 INCLUDE_MUONS       = True
 INCLUDE_PF_TREE     = True
-_pfPtMin            = 0.1
-_pfAbsEtaMax        = 5.2
 INCLUDE_TRACKS      = True
-_doTrackDedx        = True
-_trackPtMin         = 0.3
-_trackEtaMax        = 2.4
 INCLUDE_ZDC         = True
 
 DEBUG               = False
@@ -105,8 +92,8 @@ process.load('HeavyIonsAnalysis.EventAnalysis.hltanalysis_cfi')
 process.load('L1Trigger.L1TNtuples.l1MetFilterRecoTree_cfi')
 if INCLUDE_PF_TREE :
     process.load('HeavyIonsAnalysis.EventAnalysis.particleFlowAnalyser_cfi')
-    process.particleFlowAnalyser.ptMin = cms.double(_pfPtMin)
-    process.particleFlowAnalyser.absEtaMax = cms.double(_pfAbsEtaMax)
+    process.particleFlowAnalyser.ptMin = cms.double(0.1)
+    process.particleFlowAnalyser.absEtaMax = cms.double(5.2)
 process.load('HeavyIonsAnalysis.EventAnalysis.hievtanalyzer_data_cfi')
 process.hiEvtAnalyzer.doHFfilters = cms.bool(False)
 process.hiEvtAnalyzer.doCentrality = cms.bool(False) # True needed to get HF info
@@ -128,14 +115,13 @@ if INCLUDE_EGAMMA :
 # tracks
 if INCLUDE_TRACKS :
     process.load("HeavyIonsAnalysis.TrackAnalysis.TrackAnalyzers_cff")
-    process.ppTracks.trackPtMin = cms.untracked.double(_trackPtMin)
-    process.ppTracks.trackEtaMax = cms.untracked.double(_trackEtaMax)
-    if _doTrackDedx :
-        process.PbPbTracks.dedxEstimators = cms.VInputTag([
-          "dedxEstimator:dedxAllLikelihood",
-          "dedxEstimator:dedxPixelLikelihood",
-          "dedxEstimator:dedxStripLikelihood"
-        ])
+    process.PbPbTracks.trackPtMin = cms.untracked.double(0.2)
+    process.PbPbTracks.trackEtaMax = cms.untracked.double(2.4)
+    process.PbPbTracks.dedxEstimators = cms.VInputTag([
+      #"dedxEstimator:dedxPixelLikelihood",
+      #"dedxEstimator:dedxStripLikelihood",
+      "dedxEstimator:dedxAllLikelihood"
+    ])
 
 # muons
 if INCLUDE_MUONS :
@@ -187,9 +173,11 @@ if INCLUDE_FSC :
 
 # jet reco sequence
 
-# ak Jets (NOT CS jets)
-if INCLUDE_JETS :
+# ak PF Jets
+if INCLUDE_PFJETS :
     process.load('HeavyIonsAnalysis.JetAnalysis.ak4PFJetSequence_ppref_data_cff')
+    jetPtMin           = 15
+    jetAbsEtaMax       = 5.2
 
     # Select the types of jets filled
     matchJets = True        # Enables q/g and heavy flavor jet identification in MC
@@ -201,7 +189,7 @@ if INCLUDE_JETS :
 
     # 0 means use original mini-AOD jets, otherwise use R value, e.g., 3,4,8
     # Add all the values you want to process to the list
-    jetLabels = _jetLabels
+    jetLabels = ["0"]
 
     # add candidate tagging for all selected jet radii
     from HeavyIonsAnalysis.JetAnalysis.setupJets_ppRef_cff import candidateBtaggingMiniAOD
@@ -210,8 +198,7 @@ if INCLUDE_JETS :
         candidateBtaggingMiniAOD(
             process,
             isMC = False,
-            jetPtMin = _jetPtMin,
-            #jetCorrLevels = ['L2Relative', 'L3Absolute'],
+            jetPtMin = jetPtMin,
             jetCorrLevels = ['L2Relative', 'L2L3Residual'],
             doBtagging = doBtagging,
             labelR = jetLabel
@@ -226,8 +213,8 @@ if INCLUDE_JETS :
         getattr(process,"ak"+jetLabel+"PFJetAnalyzer").doBtagging = doBtagging
         getattr(process,"ak"+jetLabel+"PFJetAnalyzer").doHiJetID = doHIJetID
         getattr(process,"ak"+jetLabel+"PFJetAnalyzer").doWTARecluster = doWTARecluster
-        getattr(process,"ak"+jetLabel+"PFJetAnalyzer").jetPtMin = _jetPtMin
-        getattr(process,"ak"+jetLabel+"PFJetAnalyzer").jetAbsEtaMax = cms.untracked.double(_jetAbsEtaMax)
+        getattr(process,"ak"+jetLabel+"PFJetAnalyzer").jetPtMin = jetPtMin
+        getattr(process,"ak"+jetLabel+"PFJetAnalyzer").jetAbsEtaMax = cms.untracked.double(jetAbsEtaMax)
         getattr(process,"ak"+jetLabel+"PFJetAnalyzer").rParam = 0.4 if jetLabel=='0' else float(jetLabel)*0.1
         if doBtagging:
             getattr(process,"ak"+jetLabel+"PFJetAnalyzer").pfJetProbabilityBJetTag = cms.untracked.string("pfJetProbabilityBJetTagsAK"+jetLabel+"PFCHSBtag")
@@ -245,7 +232,7 @@ if INCLUDE_DFINDER :
     GenLabel      = 'prunedGenParticles'
     from Bfinder.finderMaker.finderMaker_75X_cff import finderMaker_75X,setCutForAllChannelsDfinder
     finderMaker_75X(process, runOnMC, VtxLabel, TrkLabel, TrkChi2Label, GenLabel)
-    process.Dfinder.tkPtCut = cms.double(0.1) # before fit
+    process.Dfinder.tkPtCut = cms.double(0.2) # before fit
     process.Dfinder.tkEtaCut = cms.double(2.4) # before fit
     process.Dfinder.Dchannel = cms.vint32(
         1, # K+pi- : D0bar
@@ -264,8 +251,8 @@ if INCLUDE_DFINDER :
         0, # D0(K-pi+)pi- : B-
         0, # p+k-pi+: lambdaC+
         0, # p-k+pi-: lambdaCbar-
-        1,  # p+Ks(pi+pi-): lambdaC+
-        1   # p-Ks(pi+pi-): lambdaCbar-
+        0, # p+Ks(pi+pi-): lambdaC+
+        0  # p-Ks(pi+pi-): lambdaCbar-
     )
     setCutForAllChannelsDfinder(
         process,
@@ -276,14 +263,14 @@ if INCLUDE_DFINDER :
     )
     process.Dfinder.dPtCut = cms.vdouble( # Accept if > dPtCut
         0.,  0.,    # K+pi- : D0bar
-        1.9, 1.9,   # K-pi+pi+ : D+
+        1.,  1.,    # K-pi+pi+ : D+
         0.,  0.,    # K-pi-pi+pi+ : D0
         0.,  0.,    # K+K-(Phi)pi+ : Ds+
         0.,  0.,    # D0(K-pi+)pi+ : D+*
         0.,  0.,    # D0(K-pi-pi+pi+)pi+ : D+*
         0.,  0.,    # D0bar(K+pi+)pi+ : B+
         0.,  0.,    # p+k-pi+: lambdaC+
-        1.9, 1.9    # p+Ks(pi+pi-): lambdaC+
+        2.,  2.     # p+Ks(pi+pi-): lambdaC+
     )
     process.Dfinder.printInfo = cms.bool(False)
     process.Dfinder.dropUnusedTracks = cms.bool(True)
@@ -291,16 +278,13 @@ if INCLUDE_DFINDER :
 
 ###############################################################################
 
-# Event Selection -> add the needed filters here
+# Event Selection Filters
 process.load('HeavyIonsAnalysis.EventAnalysis.collisionEventSelection_cff')
 process.pclusterCompatibilityFilter = cms.Path(process.clusterCompatibilityFilter)
 process.pprimaryVertexFilter = cms.Path(process.primaryVertexFilter)
 process.load('HeavyIonsAnalysis.EventAnalysis.hffilterPF_cfi')
+process.load('HeavyIonsAnalysis.ZDCAnalysis.HiZDCfilter_cfi')
 process.pAna = cms.EndPath(process.skimanalysis)
-#process.filterSequence = cms.Sequence(
-#    process.clusterCompatibilityFilter +
-#    process.primaryVertexFilter
-#)
 
 # HLT Filter
 if INCLUDE_HLTFILTER :
@@ -308,36 +292,14 @@ if INCLUDE_HLTFILTER :
     process.hltfilter = hltHighLevel.clone(
         HLTPaths = [
             # ZeroBias
-            "HLT_HIUPC_ZeroBias_SinglePixelTrack_MaxPixelTrack_v*",
             "HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v*",
             "HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v*",
             "HLT_HIUPC_ZeroBias_MaxPixelCluster10000_v*",
             # ZDCOR
-            "HLT_HIUPC_ZDC1nOR_SinglePixelTrack_MaxPixelTrack_v*",
             "HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v*",
             "HLT_HIUPC_ZDC1nOR_MinPixelCluster400_MaxPixelCluster10000_v*",
             "HLT_HIUPC_ZDC1nOR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_ZDC1nOR_MBHF1AND_PixelTrackMultiplicity40400_v*",
-            "HLT_HIUPC_ZDC1nOR_MBHF1AND_PixelTrackMultiplicity30400_v*",
-            "HLT_HIUPC_ZDC1nOR_MBHF1AND_PixelTrackMultiplicity20400_v*",
-            "HLT_HIUPC_ZDC1nXOR_MBHF2AND_PixelTrackMultiplicity40_v*",
-            "HLT_HIUPC_ZDC1nXOR_MBHF2AND_PixelTrackMultiplicity30_v*",
-            "HLT_HIUPC_ZDC1nXOR_MBHF2AND_PixelTrackMultiplicity20_v*",
-            "HLT_HIUPC_ZDC1nXOR_MBHF1AND_PixelTrackMultiplicity40_v*",
-            "HLT_HIUPC_ZDC1nXOR_MBHF1AND_PixelTrackMultiplicity30_v*",
-            "HLT_HIUPC_ZDC1nXOR_MBHF1AND_PixelTrackMultiplicity20_v*",
-            "HLT_HIUPC_ZDC1nAsymXOR_MBHF2AND_PixelTrackMultiplicity40_v*",
-            "HLT_HIUPC_ZDC1nAsymXOR_MBHF2AND_PixelTrackMultiplicity30_v*",
-            "HLT_HIUPC_ZDC1nAsymXOR_MBHF2AND_PixelTrackMultiplicity20_v*",
-            "HLT_HIUPC_ZDC1nAsymXOR_MBHF1AND_PixelTrackMultiplicity40_v*",
-            "HLT_HIUPC_ZDC1nAsymXOR_MBHF1AND_PixelTrackMultiplicity30_v*",
-            "HLT_HIUPC_ZDC1nAsymXOR_MBHF1AND_PixelTrackMultiplicity20_v*",
-            "HLT_HIUPC_ZDC1nAND_NotMBHF2_MaxPixelCluster10000_v*",
             # NotHFANDJets + ZDCORJets
-            "HLT_HIUPC_SingleJet8_ZDC1nXOR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_SingleJet8_ZDC1nAsymXOR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_SingleJet8_NotZDC_OR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_SingleJet8_NotMBHF2AND_MaxPixelCluster10000_v*",
             "HLT_HIUPC_SingleJet12_ZDC1nXOR_MaxPixelCluster10000_v*",
             "HLT_HIUPC_SingleJet12_ZDC1nAsymXOR_MaxPixelCluster10000_v*",
             "HLT_HIUPC_SingleJet12_NotZDC_OR_MaxPixelCluster10000_v*",
@@ -346,64 +308,16 @@ if INCLUDE_HLTFILTER :
             "HLT_HIUPC_SingleJet16_ZDC1nAsymXOR_MaxPixelCluster10000_v*",
             "HLT_HIUPC_SingleJet16_NotZDC_OR_MaxPixelCluster10000_v*",
             "HLT_HIUPC_SingleJet16_NotMBHF2AND_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_SingleJet20_ZDC1nXOR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_SingleJet20_ZDC1nAsymXOR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_SingleJet20_NotZDC_OR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_SingleJet20_NotMBHF2AND_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_SingleJet24_ZDC1nXOR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_SingleJet24_ZDC1nAsymXOR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_SingleJet24_NotZDC_OR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_SingleJet24_NotMBHF2AND_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_SingleJet28_ZDC1nXOR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_SingleJet28_ZDC1nAsymXOR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_SingleJet28_NotZDC_OR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_SingleJet28_NotMBHF2AND_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_DoubleJet8_DeltaPhi2p0_ZDC1nXOR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_DoubleJet8_DeltaPhi2p0_NotZDCAND_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_DoubleJet8_DeltaPhi2p0_NotZDC1nOR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_DoubleJet8_DeltaPhi2p0_NotMBHF2AND_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_DoubleJet12_DeltaPhi2p0_ZDC1nXOR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_DoubleJet12_DeltaPhi2p0_NotZDCAND_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_DoubleJet12_DeltaPhi2p0_NotZDC1nOR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_DoubleJet12_DeltaPhi2p0_NotMBHF2AND_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_DoubleJet16_DeltaPhi2p0_ZDC1nXOR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_DoubleJet16_DeltaPhi2p0_NotZDCAND_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_DoubleJet16_DeltaPhi2p0_NotZDC1nOR_MaxPixelCluster10000_v*",
-            "HLT_HIUPC_DoubleJet16_DeltaPhi2p0_NotMBHF2AND_MaxPixelCluster10000_v*",
             # UPCSingleMuon
-            "HLT_HIUPC_SingleMuOpen_NotMBHF2OR_v*",
             "HLT_HIUPC_SingleMuOpen_NotMBHF2OR_MaxPixelCluster1000_v*",
-            "HLT_HIUPC_SingleMuOpen_NotMBHF2AND_v*",
             "HLT_HIUPC_SingleMuOpen_NotMBHF2AND_MaxPixelCluster1000_v*",
-            "HLT_HIUPC_SingleMuOpen_BptxAND_MaxPixelCluster1000_v*",
-            "HLT_HIUPC_SingleMuOpen_OR_SingleMuCosmic_EMTF_NotMBHF2OR_v*",
-            "HLT_HIUPC_SingleMuOpen_OR_SingleMuCosmic_EMTF_NotMBHF2OR_MaxPixelCluster1000_v*",
-            "HLT_HIUPC_SingleMuOpen_OR_SingleMuCosmic_EMTF_NotMBHF2AND_v*",
-            "HLT_HIUPC_SingleMuOpen_OR_SingleMuCosmic_EMTF_NotMBHF2AND_MaxPixelCluster1000_v*",
-            "HLT_HIUPC_SingleMuOpen_OR_SingleMuCosmic_EMTF_BptxAND_MaxPixelCluster1000_v*",
-            "HLT_HIUPC_SingleMuCosmic_NotMBHF2OR_v*",
-            "HLT_HIUPC_SingleMuCosmic_NotMBHF2OR_MaxPixelCluster1000_v*",
-            "HLT_HIUPC_SingleMuCosmic_NotMBHF2AND_v*",
-            "HLT_HIUPC_SingleMuCosmic_NotMBHF2AND_MaxPixelCluster1000_v*",
-            "HLT_HIUPC_SingleMuCosmic_BptxAND_MaxPixelCluster1000_v*",
-            # HFZDC Photonuclear
-            "HLT_HIUPC_ZDC1nXOR_MBHF2OR_SameSide_PixelTrackMultiplicity40_v*",
-            "HLT_HIUPC_ZDC1nXOR_MBHF2OR_SameSide_PixelTrackMultiplicity30_v*",
-            "HLT_HIUPC_ZDC1nXOR_MBHF2OR_SameSide_PixelTrackMultiplicity20_v*",
-            "HLT_HIUPC_ZDC1nXOR_MBHF2XOR_SameSide_PixelTrackMultiplicity40_v*",
-            "HLT_HIUPC_ZDC1nXOR_MBHF2XOR_SameSide_PixelTrackMultiplicity30_v*",
-            "HLT_HIUPC_ZDC1nXOR_MBHF2XOR_SameSide_PixelTrackMultiplicity20_v*",
-            "HLT_HIUPC_ZDC1nXOR_MBHF1OR_SameSide_PixelTrackMultiplicity40_v*",
-            "HLT_HIUPC_ZDC1nXOR_MBHF1OR_SameSide_PixelTrackMultiplicity30_v*",
-            "HLT_HIUPC_ZDC1nXOR_MBHF1OR_SameSide_PixelTrackMultiplicity20_v*",
-            "HLT_HIUPC_ZDC1nXOR_MBHF1AsymXOR_SameSide_PixelTrackMultiplicity40_v*",
-            "HLT_HIUPC_ZDC1nXOR_MBHF1AsymXOR_SameSide_PixelTrackMultiplicity30_v*",
-            "HLT_HIUPC_ZDC1nXOR_MBHF1AsymXOR_SameSide_PixelTrackMultiplicity20_v*"
+            "HLT_HIUPC_SingleMuOpen_BptxAND_MaxPixelCluster1000_v*"
         ]
     )
     process.filterSequence = cms.Sequence(
-        process.hltfilter +
-        process.primaryVertexFilter
+        process.hltfilter *
+        process.primaryVertexFilter *
+        (process.zdcrecoRun3 + process.zdcEnergyFilter0nOr)
     )
 
 process.superFilterPath = cms.Path(process.filterSequence)

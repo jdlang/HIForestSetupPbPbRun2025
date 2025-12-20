@@ -10,8 +10,7 @@ username = getUsername()
 # INPUT/OUTPUT SETTINGS
 
 pd = 'HIForward0'
-run = '400098-400243'
-jobTag = 'PbPbUPC_' + pd + '_' + run + '_QuickAnalysis'
+jobTag = 'PbPbUPC_' + pd + '_Part1'
 cmsswConfig = 'forest_CMSSWConfig_Run3_151X_2025PbPb_UPC_MITHIG.py'
 
 inputDAS = '/' + pd + '/HIRun2025A-PromptReco-v1/MINIAOD'
@@ -38,17 +37,17 @@ config.JobType.allowUndistributedCMSSW = True
 
 config.Data.inputDataset = inputDAS
 config.Data.inputDBS = inputDatabase
-config.Data.lumiMask = '/eos/user/c/cmsdqm/www/CAF/certification/Collisions25HI/DCSOnly_JSONS/dailyDCSOnlyJSON/Collisions25HI_5p36TeV_399465_400339_DCSOnly_TkPx.json'
-config.Data.runRange = run
-config.Data.splitting = 'EventAwareLumiBased'
-config.Data.unitsPerJob = 5000
+config.Data.lumiMask = '/eos/user/c/cmsdqm/www/CAF/certification/Collisions25HI/Cert_Collisions2025_HI_399465_400007_Golden.json'
+#config.Data.runRange = '399465-400007'
+config.Data.splitting = 'LumiBased'
+config.Data.unitsPerJob = 2
 config.Data.totalUnits = -1
 
 config.Data.outLFNDirBase = output
 config.Data.publication = False
 config.Data.allowNonValidInputDataset = True
 
-config.Site.whitelist = ['T2_US_Vanderbilt']
+config.Site.whitelist = ['T2_US_Vanderbilt', 'T2_CH_CERN']
 config.Site.storageSite = outputServer
 
 AccountingGroup = 'group_u_CMS.u_zh.priority'
