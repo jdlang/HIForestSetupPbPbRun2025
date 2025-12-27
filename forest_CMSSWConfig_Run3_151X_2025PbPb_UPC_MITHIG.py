@@ -5,14 +5,15 @@
 # SW: CMSSW_15_1_0_patch4, forest_CMSSW_15_1_X, Dfinder_14XX_miniAOD
 
 import FWCore.ParameterSet.Config as cms
-from Configuration.Eras.Era_Run3_pp_on_PbPb_2025_cff import Run3_pp_on_PbPb_2025
-process = cms.Process('HiForest', Run3_pp_on_PbPb_2025)
-
+#from Configuration.Eras.Era_Run3_pp_on_PbPb_2025_cff import Run3_pp_on_PbPb_2025
+#process = cms.Process('HiForest', Run3_pp_on_PbPb_2025)
+from Configuration.Eras.Era_Run3_2025_UPC_cff import Run3_2025_UPC
+process = cms.Process('HiForest', Run3_2025_UPC)
 
 HIFOREST_VERSION = "151X"
 GLOBAL_TAG = "151X_dataRun3_Prompt_v1"
 INPUT_TEST_FILE = "root://eoscms.cern.ch//eos/cms/store/hidata/HIRun2025A/HIForward2/MINIAOD/PromptReco-v1/000/399/660/00000/bfaa8b34-3989-4ae1-a291-84e41b623a71.root"
-INPUT_MAX_EVENTS    = 10000
+INPUT_MAX_EVENTS    = 1000
 OUTPUT_FILE_NAME    = "HiForest_2025PbPbUPC.root"
 
 INCLUDE_CENTRALITY  = False
