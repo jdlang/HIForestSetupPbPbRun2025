@@ -127,14 +127,13 @@ if INCLUDE_MUONS :
 
 # PF jets
 if INCLUDE_PFJETS :
-#    process.load("HeavyIonsAnalysis.JetAnalysis.ak2PFJetSequence_ppref_data_cff")
-#    process.load("HeavyIonsAnalysis.JetAnalysis.ak3PFJetSequence_ppref_data_cff")
     process.load("HeavyIonsAnalysis.JetAnalysis.ak4PFJetSequence_ppref_data_cff")
-    process.load("HeavyIonsAnalysis.JetAnalysis.ak4CaloJetSequence_pp_data_cff")
+
+#    process.load('HeavyIonsAnalysis.JetAnalysis.akCs4PFJetSequence_pponPbPb_data_cff')
+#    process.load('HeavyIonsAnalysis.JetAnalysis.akPu4CaloJetSequence_pponPbPb_data_cff')
+#    process.akPu4CaloJetAnalyzer.doHiJetID = True
 
 # ZDC RecHit Producer && Analyzer
-# to prevent crash related to HcalSeverityLevelComputerRcd record
-process.load("RecoLocalCalo.HcalRecAlgos.hcalRecAlgoESProd_cfi")
 if INCLUDE_ZDC :
     process.load('HeavyIonsAnalysis.ZDCAnalysis.QWZDC2018Producer_cfi')
     process.load('HeavyIonsAnalysis.ZDCAnalysis.QWZDC2018RecHit_cfi')
@@ -149,28 +148,28 @@ if INCLUDE_ZDC :
     process.zdcanalyzer.verbose = cms.bool(False)
     process.zdcanalyzer.nZdcTs = cms.int32(6)
 
-    from CondCore.CondDB.CondDB_cfi import *
-    process.es_pool = cms.ESSource("PoolDBESSource",
-        timetype = cms.string('runnumber'),
-        toGet = cms.VPSet(
-            cms.PSet(
-                record = cms.string("HcalElectronicsMapRcd"),
-                tag = cms.string("HcalElectronicsMap_2021_v2.0_data")
-            )
-        ),
-        connect = cms.string('frontier://FrontierProd/CMS_CONDITIONS'),
-        authenticationMethod = cms.untracked.uint32(1)
-    )
-    process.es_prefer = cms.ESPrefer('HcalTextCalibrations', 'es_ascii')
-    process.es_ascii = cms.ESSource(
-        'HcalTextCalibrations',
-        input = cms.VPSet(
-            cms.PSet(
-                object = cms.string('ElectronicsMap'),
-                file = cms.FileInPath("HeavyIonsAnalysis/Configuration/data/ZDCemap_PbPbUPC2023.txt")
-            )
-        )
-    )
+#    from CondCore.CondDB.CondDB_cfi import *
+#    process.es_pool = cms.ESSource("PoolDBESSource",
+#        timetype = cms.string('runnumber'),
+#        toGet = cms.VPSet(
+#            cms.PSet(
+#                record = cms.string("HcalElectronicsMapRcd"),
+#                tag = cms.string("HcalElectronicsMap_2021_v2.0_data")
+#            )
+#        ),
+#        connect = cms.string('frontier://FrontierProd/CMS_CONDITIONS'),
+#        authenticationMethod = cms.untracked.uint32(1)
+#    )
+#    process.es_prefer = cms.ESPrefer('HcalTextCalibrations', 'es_ascii')
+#    process.es_ascii = cms.ESSource(
+#        'HcalTextCalibrations',
+#        input = cms.VPSet(
+#            cms.PSet(
+#                object = cms.string('ElectronicsMap'),
+#                file = cms.FileInPath("HeavyIonsAnalysis/Configuration/data/ZDCemap_PbPbUPC2023.txt")
+#            )
+#        )
+#    )
 
 ###############################################################################
 
@@ -206,63 +205,109 @@ if INCLUDE_ZDC :
 # jet reco sequence
 
 # ak PF Jets
+#if INCLUDE_PFJETS :
+#    jetPtMin           = 15
+#    jetAbsEtaMax       = 5.2
+#    
+#    # Select the types of jets filled
+#    matchJets = True        # Enables q/g and heavy flavor jet identification in MC
+#
+#    # Choose which additional information is added to jet trees
+#    doHIJetID = True        # Fill jet ID and composition information branches
+#    doWTARecluster = False  # Add jet phi and eta for WTA axis
+#    
+#    #The following series of analyzers is to hack in a calorimeter jet correction
+#    process.hltAK4CaloRelativeCorrector = cms.EDProducer(
+#        "LXXXCorrectorProducer",
+#        algorithm = cms.string('AK4Calo'),
+#        level = cms.string('L2Relative')
+#    )
+#    process.hltAK4CaloAbsoluteCorrector = cms.EDProducer(
+#        "LXXXCorrectorProducer",
+#        algorithm = cms.string('AK4Calo'),
+#        level = cms.string('L3Absolute')
+#    )
+#    process.hltAK4CaloCorrector = cms.EDProducer(
+#        "ChainedJetCorrectorProducer",
+#        correctors = cms.VInputTag("hltAK4CaloRelativeCorrector", "hltAK4CaloAbsoluteCorrector")
+#    )
+#    process.hltAK4CaloJetsCorrected = cms.EDProducer(
+#        "CorrectedCaloJetProducer",
+#        correctors = cms.VInputTag("hltAK4CaloCorrector"),
+#        src = cms.InputTag("slimmedCaloJets")
+#    )
+#    process.ak4CaloJetAnalyzer.jetTag = cms.InputTag("hltAK4CaloJetsCorrected")
+#    #End calorimeter jet correction hack
+#    
+#    process.load("HeavyIonsAnalysis.JetAnalysis.extraJets_cff")
+#    from HeavyIonsAnalysis.JetAnalysis.clusterJetsFromMiniAOD_cff import setupPprefJets
+#    process.jetsR4 = cms.Sequence()
+#    setupPprefJets(
+#        'ak04PF',
+#        process.jetsR4,
+#        process,
+#        isMC = 0,
+#        radius = 0.40,
+#        JECTag = 'AK4PF'
+#    )
+#    process.ak04PFpatJetCorrFactors.levels = ['L2Relative', 'L3Absolute']
+#    process.ak04PFpatJetCorrFactors.primaryVertices = "offlineSlimmedPrimaryVertices"
+#    process.load("HeavyIonsAnalysis.JetAnalysis.candidateBtaggingMiniAOD_cff")
+#    process.ak4PFJetAnalyzer.jetTag = 'ak04PFpatJets'
+#    process.ak4PFJetAnalyzer.jetName = 'ak04PF'
+#    process.ak4PFJetAnalyzer.doHiJetID = doHIJetID
+#    process.ak4PFJetAnalyzer.doWTARecluster = doWTARecluster
+#    process.ak4PFJetAnalyzer.jetPtMin = jetPtMin
+#    process.ak4PFJetAnalyzer.jetAbsEtaMax = cms.untracked.double(jetAbsEtaMax)
+#    process.ak4PFJetAnalyzer.doSubEvent = False # Need to disable this, since there is some issue with the gen jet constituents.
+#    
+#    process.forest += process.extraJetsData * process.jetsR4 * process.ak4PFJetAnalyzer
+
 if INCLUDE_PFJETS :
-    jetPtMin           = 15
-    jetAbsEtaMax       = 5.2
-    
+    process.load('HeavyIonsAnalysis.JetAnalysis.ak4PFJetSequence_ppref_data_cff')
+    jetPtMin      = 15
+    jetAbsEtaMax  = 5.2
+
     # Select the types of jets filled
     matchJets = True        # Enables q/g and heavy flavor jet identification in MC
 
     # Choose which additional information is added to jet trees
-    doHIJetID = True        # Fill jet ID and composition information branches
-    doWTARecluster = False  # Add jet phi and eta for WTA axis
-    
-    #The following series of analyzers is to hack in a calorimeter jet correction
-    process.hltAK4CaloRelativeCorrector = cms.EDProducer(
-        "LXXXCorrectorProducer",
-        algorithm = cms.string('AK4Calo'),
-        level = cms.string('L2Relative')
-    )
-    process.hltAK4CaloAbsoluteCorrector = cms.EDProducer(
-        "LXXXCorrectorProducer",
-        algorithm = cms.string('AK4Calo'),
-        level = cms.string('L3Absolute')
-    )
-    process.hltAK4CaloCorrector = cms.EDProducer(
-        "ChainedJetCorrectorProducer",
-        correctors = cms.VInputTag("hltAK4CaloRelativeCorrector", "hltAK4CaloAbsoluteCorrector")
-    )
-    process.hltAK4CaloJetsCorrected = cms.EDProducer(
-        "CorrectedCaloJetProducer",
-        correctors = cms.VInputTag("hltAK4CaloCorrector"),
-        src = cms.InputTag("slimmedCaloJets")
-    )
-    process.ak4CaloJetAnalyzer.jetTag = cms.InputTag("hltAK4CaloJetsCorrected")
-    #End calorimeter jet correction hack
-    
-    process.load("HeavyIonsAnalysis.JetAnalysis.extraJets_cff")
-    from HeavyIonsAnalysis.JetAnalysis.clusterJetsFromMiniAOD_cff import setupPprefJets
-    process.jetsR4 = cms.Sequence()
-    setupPprefJets(
-        'ak04PF',
-        process.jetsR4,
-        process,
-        isMC = 0,
-        radius = 0.40,
-        JECTag = 'AK4PF'
-    )
-    process.ak04PFpatJetCorrFactors.levels = ['L2Relative', 'L3Absolute']
-    process.ak04PFpatJetCorrFactors.primaryVertices = "offlineSlimmedPrimaryVertices"
-    process.load("HeavyIonsAnalysis.JetAnalysis.candidateBtaggingMiniAOD_cff")
-    process.ak4PFJetAnalyzer.jetTag = 'ak04PFpatJets'
-    process.ak4PFJetAnalyzer.jetName = 'ak04PF'
-    process.ak4PFJetAnalyzer.doHiJetID = doHIJetID
-    process.ak4PFJetAnalyzer.doWTARecluster = doWTARecluster
-    process.ak4PFJetAnalyzer.jetPtMin = jetPtMin
-    process.ak4PFJetAnalyzer.jetAbsEtaMax = cms.untracked.double(jetAbsEtaMax)
-    process.ak4PFJetAnalyzer.doSubEvent = False # Need to disable this, since there is some issue with the gen jet constituents.
-    
-    process.forest += process.extraJetsData * process.jetsR4 * process.ak4PFJetAnalyzer
+    doHIJetID = True              # Fill jet ID and composition information branches
+    doWTARecluster = False        # Add jet phi and eta for WTA axis
+    doBtagging = cms.bool(False)  # Note that setting to True increases computing time a lot
+
+    # 0 means use original mini-AOD jets, otherwise use R value, e.g., 3,4,8
+    # Add all the values you want to process to the list
+    jetLabels = ["0"]
+
+    # add candidate tagging for all selected jet radii
+    from HeavyIonsAnalysis.JetAnalysis.setupJets_ppRef_cff import candidateBtaggingMiniAOD
+
+    for jetLabel in jetLabels:
+        candidateBtaggingMiniAOD(
+            process,
+            isMC = False,
+            jetPtMin = jetPtMin,
+            jetCorrLevels = ['L2Relative', 'L2L3Residual'],
+            doBtagging = doBtagging,
+            labelR = jetLabel
+        )
+        # setup jet analyzer
+        setattr(process,"ak"+jetLabel+"PFJetAnalyzer",process.ak4PFJetAnalyzer.clone())
+        getattr(process,"ak"+jetLabel+"PFJetAnalyzer").jetTag = "selectedUpdatedPatJetsAK"+jetLabel+"PFCHSBtag"
+        getattr(process,"ak"+jetLabel+"PFJetAnalyzer").jetName = 'ak'+jetLabel+'PF'
+        getattr(process,"ak"+jetLabel+"PFJetAnalyzer").matchJets = matchJets
+        getattr(process,"ak"+jetLabel+"PFJetAnalyzer").matchTag = 'patJetsAK'+jetLabel+'PFUnsubJets'
+        getattr(process,"ak"+jetLabel+"PFJetAnalyzer").doBtagging = doBtagging
+        getattr(process,"ak"+jetLabel+"PFJetAnalyzer").doHiJetID = doHIJetID
+        getattr(process,"ak"+jetLabel+"PFJetAnalyzer").doWTARecluster = doWTARecluster
+        getattr(process,"ak"+jetLabel+"PFJetAnalyzer").jetPtMin = jetPtMin
+        getattr(process,"ak"+jetLabel+"PFJetAnalyzer").jetAbsEtaMax = cms.untracked.double(jetAbsEtaMax)
+        getattr(process,"ak"+jetLabel+"PFJetAnalyzer").rParam = 0.4 if jetLabel=='0' else float(jetLabel)*0.1
+        if doBtagging:
+            getattr(process,"ak"+jetLabel+"PFJetAnalyzer").pfJetProbabilityBJetTag = cms.untracked.string("pfJetProbabilityBJetTagsAK"+jetLabel+"PFCHSBtag")
+            getattr(process,"ak"+jetLabel+"PFJetAnalyzer").pfUnifiedParticleTransformerAK4JetTags = cms.untracked.string("pfUnifiedParticleTransformerAK4JetTagsAK"+jetLabel+"PFCHSBtag")
+        process.forest += getattr(process,"ak"+jetLabel+"PFJetAnalyzer")
 
 ###############################################################################
 

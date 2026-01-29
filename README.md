@@ -12,7 +12,7 @@ cd CMSSW_13_2_15/src
 cmsenv
 
 # Add HI foresting tools
-git cms-merge-topic CmsHI:forest_CMSSW_13_2_X_v2
+git cms-merge-topic CmsHI:forest_CMSSW_13_2_X
 
 # Initial build to make sure that works
 scram build -j4
@@ -20,15 +20,8 @@ scram build -j4
 # Add Dfinder (note: always use 14XX!)
 git clone -b Dfinder_14XX_miniAOD git@github.com:boundino/Bfinder.git --depth 1
 
-# Add fix for 2023 jet correction
-git clone https://github.com/cfmcginn/production
-cp production/HIRun2023/forestPPRef/ak* HeavyIonsAnalysis/JetAnalysis/python/
-cp production/HIRun2023/forestPPRef/forest_miniAOD_run3_ppRECO_DATA.py HeavyIonsAnalysis/Configuration/test/
-rm -rf production
-
-# Add this repo and copy the ZDC emap into the HI foresting tools
+# Add this repo 
 git clone -b Run3PbPbUPC_MITHIGForwardStudies git@github.com:jdlang/HIForestSetupPbPbRun2025.git
-cp HIForestSetupPbPbRun2025/ZDCemap_PbPbUPC2023.txt HeavyIonsAnalysis/Configuration/data/
 
 # Rebuild to apply changes
 scram build -j4
