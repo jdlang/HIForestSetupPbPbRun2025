@@ -10,7 +10,7 @@ username = getUsername()
 # INPUT/OUTPUT SETTINGS
 
 pd = 'HIForward0'
-jobTag = '2023PbPbUPC_Jan2024ReReco_20260128Forest_' + pd + '_TEST4'
+jobTag = '2023PbPbUPC_Jan2024ReReco_20260128Forest_' + pd
 cmsswConfig = 'forest_CMSSWConfig_Run3_132X_2023PbPb_Jan2024ReReco_UPC_MITHIG.py'
 
 inputDAS = '/' + pd + '/HIRun2023A-16Jan2024-v1/MINIAOD'
@@ -31,7 +31,7 @@ config.General.transferOutputs = True
 config.JobType.psetName = cmsswConfig
 config.JobType.pluginName = 'Analysis'
 config.JobType.maxMemoryMB = 2500
-config.JobType.maxJobRuntimeMin = 120
+config.JobType.maxJobRuntimeMin = 60
 config.JobType.pyCfgParams = ['noprint']
 config.JobType.allowUndistributedCMSSW = True
 
@@ -41,7 +41,7 @@ config.Data.lumiMask = '/eos/user/c/cmsdqm/www/CAF/certification/Collisions23HI/
 config.Data.runRange = '374804-375746'
 config.Data.splitting = 'LumiBased'
 config.Data.unitsPerJob = 20
-config.Data.totalUnits = 1
+config.Data.totalUnits = -1
 
 config.Data.outLFNDirBase = output
 config.Data.publication = False

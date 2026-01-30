@@ -5,12 +5,11 @@
 # SW: CMSSW_13_2_10+, forest_CMSSW_13_2_X, Dfinder_14XX_miniAOD
 
 import FWCore.ParameterSet.Config as cms
-from Configuration.Eras.Era_Run3_2023_cff import Run3_2023
-process = cms.Process('HiForest', Run3_2023)
+from Configuration.Eras.Era_Run3_2023_UPC_cff import Run3_2023_UPC
+process = cms.Process('HiForest', Run3_2023_UPC)
 
 HIFOREST_VERSION = "132X"
 GLOBAL_TAG = "132X_dataRun3_Prompt_HI_LowPtPhotonReg_v2"
-#GLOBAL_TAG = "132X_dataRun3_Prompt_v3"
 INPUT_TEST_FILE = "root://xrootd-vanderbilt.sites.opensciencegrid.org//store/hidata/HIRun2023A/HIForward0/MINIAOD/16Jan2024-v1/2810000/3cb20bb5-a7b1-43a2-8025-9807f4f51e71.root"
 INPUT_MAX_EVENTS    = 1000
 OUTPUT_FILE_NAME    = "HiForest_2023PbPbUPC_Jan24Reco.root"
@@ -54,7 +53,8 @@ process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
          INPUT_TEST_FILE
     ),
-    lumisToProcess=cms.untracked.VLuminosityBlockRange("374804:1-375746:max")
+    # Uncomment to run locally on good events:
+    #lumisToProcess=cms.untracked.VLuminosityBlockRange("374804:1-375746:max")
 )
 
 # number of events to process, set to -1 to process all events
