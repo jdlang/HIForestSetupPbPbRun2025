@@ -117,6 +117,8 @@ if INCLUDE_TRACKS :
     process.load("HeavyIonsAnalysis.TrackAnalysis.TrackAnalyzers_cff")
     process.PbPbTracks.trackPtMin = cms.untracked.double(0.2)
     process.PbPbTracks.trackEtaMax = cms.untracked.double(2.4)
+    process.ppTracks.trackPtMin = cms.untracked.double(0.2)
+    process.ppTracks.trackEtaMax = cms.untracked.double(2.4)
 
 # muons
 if INCLUDE_MUONS :
@@ -125,51 +127,9 @@ if INCLUDE_MUONS :
     process.load("HeavyIonsAnalysis.MuonAnalysis.hltMuTree_cfi")
     process.unpackedMuons.muonSelectors = cms.vstring()
 
-# PF jets
-if INCLUDE_PFJETS :
-    process.load("HeavyIonsAnalysis.JetAnalysis.ak4PFJetSequence_ppref_data_cff")
-
-#    process.load('HeavyIonsAnalysis.JetAnalysis.akCs4PFJetSequence_pponPbPb_data_cff')
-#    process.load('HeavyIonsAnalysis.JetAnalysis.akPu4CaloJetSequence_pponPbPb_data_cff')
-#    process.akPu4CaloJetAnalyzer.doHiJetID = True
-
 # ZDC RecHit Producer && Analyzer
 if INCLUDE_ZDC :
-    process.load('HeavyIonsAnalysis.ZDCAnalysis.QWZDC2018Producer_cfi')
-    process.load('HeavyIonsAnalysis.ZDCAnalysis.QWZDC2018RecHit_cfi')
-    process.load('HeavyIonsAnalysis.ZDCAnalysis.zdcanalyzer_cfi')
-
-    process.zdcdigi.SOI = cms.untracked.int32(2)
-    process.zdcanalyzer.doZDCRecHit = cms.bool(False)
-    process.zdcanalyzer.doZDCDigi = cms.bool(True)
-    process.zdcanalyzer.zdcRecHitSrc = cms.InputTag("QWzdcreco")
-    process.zdcanalyzer.zdcDigiSrc = cms.InputTag("hcalDigis", "ZDC")
-    process.zdcanalyzer.calZDCDigi = cms.bool(False)
-    process.zdcanalyzer.verbose = cms.bool(False)
-    process.zdcanalyzer.nZdcTs = cms.int32(6)
-
-#    from CondCore.CondDB.CondDB_cfi import *
-#    process.es_pool = cms.ESSource("PoolDBESSource",
-#        timetype = cms.string('runnumber'),
-#        toGet = cms.VPSet(
-#            cms.PSet(
-#                record = cms.string("HcalElectronicsMapRcd"),
-#                tag = cms.string("HcalElectronicsMap_2021_v2.0_data")
-#            )
-#        ),
-#        connect = cms.string('frontier://FrontierProd/CMS_CONDITIONS'),
-#        authenticationMethod = cms.untracked.uint32(1)
-#    )
-#    process.es_prefer = cms.ESPrefer('HcalTextCalibrations', 'es_ascii')
-#    process.es_ascii = cms.ESSource(
-#        'HcalTextCalibrations',
-#        input = cms.VPSet(
-#            cms.PSet(
-#                object = cms.string('ElectronicsMap'),
-#                file = cms.FileInPath("HeavyIonsAnalysis/Configuration/data/ZDCemap_PbPbUPC2023.txt")
-#            )
-#        )
-#    )
+    process.load('HeavyIonsAnalysis.ZDCAnalysis.ZDCAnalyzersHC2023_cff')
 
 ###############################################################################
 
@@ -194,11 +154,10 @@ if INCLUDE_EGAMMA :
     process.forest += process.ggHiNtuplizer
 if INCLUDE_MUONS :
     process.forest += process.unpackedMuons
-    process.forest += process.muonAnalyzer
+    process.forest += process.muonSequencePbPb
     process.forest += process.hltMuTree
 if INCLUDE_ZDC :
-    process.forest += process.zdcanalyzer
-#    process.zdcSequencePbPb
+    process.forest += process.zdcSequence
 
 ###############################################################################
 
@@ -263,6 +222,7 @@ if INCLUDE_ZDC :
 #    
 #    process.forest += process.extraJetsData * process.jetsR4 * process.ak4PFJetAnalyzer
 
+# ak PF Jets
 if INCLUDE_PFJETS :
     process.load('HeavyIonsAnalysis.JetAnalysis.ak4PFJetSequence_ppref_data_cff')
     jetPtMin      = 15
@@ -371,7 +331,7 @@ process.load('HeavyIonsAnalysis.EventAnalysis.collisionEventSelection_cff')
 process.pclusterCompatibilityFilter = cms.Path(process.clusterCompatibilityFilter)
 process.pprimaryVertexFilter = cms.Path(process.primaryVertexFilter)
 #process.load('HeavyIonsAnalysis.EventAnalysis.hffilterPF_cfi')
-#process.load('HeavyIonsAnalysis.ZDCAnalysis.HiZDCfilter_cfi')
+process.load('HeavyIonsAnalysis.ZDCAnalysis.HiZDCfilter_cfi')
 process.pAna = cms.EndPath(process.skimanalysis)
 
 # HLT Filter
@@ -405,8 +365,8 @@ if INCLUDE_HLTFILTER :
     process.hltfilter.throw = cms.bool(False) # throw exception on unknown path names
     process.filterSequence = cms.Sequence(
         process.hltfilter *
-        process.primaryVertexFilter
-#        (process.zdcrecoRun3 + process.zdcEnergyFilter0nOr)
+        process.primaryVertexFilter *
+        (process.zdcreco2023HardCode + process.zdcEnergyFilter0nOr)
     )
 
 process.superFilterPath = cms.Path(process.filterSequence)
