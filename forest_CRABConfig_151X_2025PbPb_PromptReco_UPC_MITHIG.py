@@ -10,13 +10,13 @@ username = getUsername()
 # INPUT/OUTPUT SETTINGS
 
 pd = 'HIForward0'
-jobTag = 'PbPbUPC_' + pd
-cmsswConfig = 'forest_CMSSWConfig_Run3_151X_2025PbPb_UPC_MITHIG.py'
+jobTag = '2025PbPbUPC_PromptReco_20260202Forest_' + pd
+cmsswConfig = 'forest_CMSSWConfig_Run3_151X_2025PbPb_PromptReco_UPC_MITHIG.py'
 
 inputDAS = '/' + pd + '/HIRun2025A-PromptReco-v1/MINIAOD'
 inputDatabase = 'global'
 
-output = '/store/user/' + username + '/Run3_PbPbUPC/Forest_2025_PromptReco/'
+output = '/store/user/' + username + '/Run3_PbPbUPC/Forest_2025_PromptReco_Feb2025Reforest/'
 
 outputServer = 'T2_US_Vanderbilt'
 
@@ -37,9 +37,8 @@ config.JobType.allowUndistributedCMSSW = True
 
 config.Data.inputDataset = inputDAS
 config.Data.inputDBS = inputDatabase
-config.Data.lumiMask = '/afs/cern.ch/user/j/jdlang/public/Collisions25HI_399465_400007_Golden_400059_400426_DCSOnlyTkPc.json'
-#config.Data.lumiMask = '/eos/user/c/cmsdqm/www/CAF/certification/Collisions25HI/Cert_Collisions2025_HI_399465_400007_Golden.json'
-#config.Data.runRange = '399465-400007'
+config.Data.lumiMask = '/eos/user/c/cmsdqm/www/CAF/certification/Collisions25HI/Cert_Collisions2025_HI_399465_400426_Golden.json'
+config.Data.runRange = '399465-400426'
 config.Data.splitting = 'LumiBased'
 config.Data.unitsPerJob = 5
 config.Data.totalUnits = -1

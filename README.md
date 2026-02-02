@@ -3,7 +3,7 @@
 
 --------------------------------------------------------------------------------
 
-## Setup for 2023 PbPb, Jan 2024 ReReco
+# Setup for 2023 PbPb, Jan 2024 ReReco
 
 ```bash
 # Create CMSSW (note: 13_2_10 or higher should be fine)
@@ -25,6 +25,58 @@ git clone -b Run3PbPbUPC_MITHIGForwardStudies git@github.com:jdlang/HIForestSetu
 
 # Rebuild to apply changes
 scram build -j4
+```
+
+Edit and submit `132X` versions of the `forest_CMSSW` and `forest_CRAB` configs
+
+```bash
+# Initiate VOMS
+voms-proxy-init -rfc -voms cms
+
+# To test CMSSW config locally:
+cmsRun forest_CMSSWConfig_Run3_132X_2023PbPb_Jan2024ReReco_UPC_MITHIG.py
+
+# To submit jobs to CRAB:
+crab submit -c forest_CRABConfig_132X_2023PbPb_Jan2024ReReco_UPC_MITHIG.py
+```
+
+
+
+# Setup for 2025 PbPb, Prompt Reco
+
+```bash
+# Create CMSSW (note: 15_1_0_patch4 or higher should be fine)
+cmsrel CMSSW_15_1_0_patch4
+cd CMSSW_15_1_0_patch4/src
+cmsenv
+
+# Add HI foresting tools
+git cms-merge-topic CmsHI:forest_CMSSW_15_1_X
+
+# Initial build to make sure that works
+scram build -j4
+
+# Add Dfinder (note: always use 14XX!)
+git clone -b Dfinder_14XX_miniAOD git@github.com:boundino/Bfinder.git --depth 1
+
+# Add this repo 
+git clone -b Run3PbPbUPC_MITHIGForwardStudies git@github.com:jdlang/HIForestSetupPbPbRun2025.git
+
+# Rebuild to apply changes
+scram build -j4
+```
+
+Edit and submit `151X` versions of the `forest_CMSSW` and `forest_CRAB` configs
+
+```bash
+# Initiate VOMS
+voms-proxy-init -rfc -voms cms
+
+# To test CMSSW config locally:
+cmsRun forest_CMSSWConfig_Run3_151X_2025PbPb_PromptReco_UPC_MITHIG.py
+
+# To submit jobs to CRAB:
+crab submit -c forest_CRABConfig_151X_2025PbPb_PromptReco_UPC_MITHIG.py
 ```
 
 
