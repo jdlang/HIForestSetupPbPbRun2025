@@ -3,7 +3,9 @@
 
 --------------------------------------------------------------------------------
 
-# Setup for 2023 PbPb, Jan 2024 ReReco
+# 2023 PbPb, Jan 2024 ReReco
+
+Setup foresting environment:
 
 ```bash
 # Create CMSSW (note: 13_2_10 or higher should be fine)
@@ -13,6 +15,13 @@ cmsenv
 
 # Add HI foresting tools
 git cms-merge-topic CmsHI:forest_CMSSW_13_2_X
+
+# Include changes from Jing's PR
+cd HeavyIonsAnalysis/
+git remote add cmshi git@github.com:CmsHI/cmssw.git
+git fetch cmshi pull/454/head:forest_CMSSW_13_2_X_PR454
+git switch forest_CMSSW_13_2_X_PR454
+cd ..
 
 # Initial build to make sure that works
 scram build -j4
@@ -42,16 +51,25 @@ crab submit -c forest_CRABConfig_132X_2023PbPb_Jan2024ReReco_UPC_MITHIG.py
 
 
 
-# Setup for 2025 PbPb, Prompt Reco
+# 2025 PbPb, Prompt Reco
+
+Setup foresting environment:
 
 ```bash
 # Create CMSSW (note: 15_1_0_patch4 or higher should be fine)
-cmsrel CMSSW_15_1_0_patch4
-cd CMSSW_15_1_0_patch4/src
+cmsrel CMSSW_15_1_0_patch5
+cd CMSSW_15_1_0_patch5/src
 cmsenv
 
 # Add HI foresting tools
 git cms-merge-topic CmsHI:forest_CMSSW_15_1_X
+
+# Include changes from Jing's PR
+cd HeavyIonsAnalysis/
+git remote add cmshi git@github.com:CmsHI/cmssw.git
+git fetch cmshi pull/455/head:forest_CMSSW_15_1_X_PR455
+git switch forest_CMSSW_15_1_X_PR455
+cd ..
 
 # Initial build to make sure that works
 scram build -j4
