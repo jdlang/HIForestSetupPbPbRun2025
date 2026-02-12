@@ -92,8 +92,8 @@ process.load('HeavyIonsAnalysis.EventAnalysis.hltanalysis_cfi')
 process.load('L1Trigger.L1TNtuples.l1MetFilterRecoTree_cfi')
 if INCLUDE_PF_TREE :
     process.load('HeavyIonsAnalysis.EventAnalysis.particleFlowAnalyser_cfi')
-    process.particleFlowAnalyser.ptMin = cms.double(0.1)
-    process.particleFlowAnalyser.absEtaMax = cms.double(5.2)
+    process.particleFlowAnalyser.ptMin = cms.double(0.0)
+    process.particleFlowAnalyser.absEtaMax = cms.double(6.0)
 process.load('HeavyIonsAnalysis.EventAnalysis.hievtanalyzer_data_cfi')
 process.hiEvtAnalyzer.doHFfilters = cms.bool(False)
 process.hiEvtAnalyzer.doCentrality = cms.bool(False) # True needed to get HF info
