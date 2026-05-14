@@ -10,7 +10,7 @@ username = getUsername()
 # INPUT/OUTPUT SETTINGS
 
 pd = 'HIForward0'
-jobTag = '2023PbPbUPC_Feb2025ReReco_20260508Forest_' + pd
+jobTag = '2023PbPbUPC_Feb2025ReReco_20260511Forest_' + pd
 cmsswConfig = 'forest_CMSSWConfig_Run3_141X_2023PbPb_Feb2025ReReco_UPC_MITHIG.py'
 
 inputDAS = '/' + pd + '/HIRun2023A-14Feb2025-v1/MINIAOD'

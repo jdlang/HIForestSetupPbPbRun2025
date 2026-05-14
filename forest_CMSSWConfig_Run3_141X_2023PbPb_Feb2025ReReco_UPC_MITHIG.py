@@ -10,7 +10,7 @@ process = cms.Process('HiForest', Run3_2023_UPC)
 
 HIFOREST_VERSION = "141X"
 GLOBAL_TAG = "141X_dataRun3_v6"
-INPUT_TEST_FILE = "root://xrootd-vanderbilt.sites.opensciencegrid.org//store/hidata/HIRun2023A/HIForward0/MINIAOD/14Feb2025-v1/100000/04b121ec-419e-4278-81b1-b24f6c9f4159.root"
+INPUT_TEST_FILE = "/store/hidata/HIRun2023A/HIForward0/MINIAOD/14Feb2025-v1/100000/04b121ec-419e-4278-81b1-b24f6c9f4159.root"
 INPUT_MAX_EVENTS    = 1000
 OUTPUT_FILE_NAME    = "HiForest_2023PbPbUPC_Feb25Reco.root"
 
@@ -128,8 +128,10 @@ if INCLUDE_MUONS :
     process.unpackedMuons.muonSelectors = cms.vstring()
 
 # ZDC RecHit Producer && Analyzer
+# to prevent crash related to HcalSeverityLevelComputerRcd record
+process.load("RecoLocalCalo.HcalRecAlgos.hcalRecAlgoESProd_cfi")
 if INCLUDE_ZDC :
-    process.load('HeavyIonsAnalysis.ZDCAnalysis.ZDCAnalyzersHC2023_cff')
+    process.load('HeavyIonsAnalysis.ZDCAnalysis.ZDCAnalyzersPbPb_cff')
 
 ###############################################################################
 
@@ -157,7 +159,7 @@ if INCLUDE_MUONS :
     process.forest += process.muonSequencePbPb
     process.forest += process.hltMuTree
 if INCLUDE_ZDC :
-    process.forest += process.zdcSequence
+    process.forest += process.zdcSequencePbPb
 
 ###############################################################################
 
@@ -234,7 +236,7 @@ if INCLUDE_PFJETS :
     # Choose which additional information is added to jet trees
     doHIJetID = True              # Fill jet ID and composition information branches
     doWTARecluster = False        # Add jet phi and eta for WTA axis
-    doBtagging = cms.bool(False)  # Note that setting to True increases computing time a lot
+    doBtagging = cms.untracked.bool(False)  # Note that setting to True increases computing time a lot
 
     # 0 means use original mini-AOD jets, otherwise use R value, e.g., 3,4,8
     # Add all the values you want to process to the list
@@ -366,7 +368,7 @@ if INCLUDE_HLTFILTER :
     process.filterSequence = cms.Sequence(
         process.hltfilter *
         process.primaryVertexFilter *
-        (process.zdcreco2023HardCode + process.zdcEnergyFilter0nOr)
+        (process.zdcrecoRun3 + process.zdcEnergyFilter0nOr)
     )
 
 process.superFilterPath = cms.Path(process.filterSequence)
