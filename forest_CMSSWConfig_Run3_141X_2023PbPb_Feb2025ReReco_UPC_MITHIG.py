@@ -334,7 +334,7 @@ process.load('HeavyIonsAnalysis.EventAnalysis.collisionEventSelection_cff')
 process.pclusterCompatibilityFilter = cms.Path(process.clusterCompatibilityFilter)
 process.pprimaryVertexFilter = cms.Path(process.primaryVertexFilter)
 process.load('HeavyIonsAnalysis.EventAnalysis.hffilterPF_cfi')
-process.load('HeavyIonsAnalysis.ZDCAnalysis.HiZDCfilterHC_cfi')
+process.load('HeavyIonsAnalysis.ZDCAnalysis.HiZDCfilter_cfi')
 process.pAna = cms.EndPath(process.skimanalysis)
 
 # HLT Filter
@@ -369,7 +369,7 @@ if INCLUDE_HLTFILTER :
     process.filterSequence = cms.Sequence(
         process.hltfilter *
         process.primaryVertexFilter *
-        (process.zdcreco2023HardCode + process.zdcEnergyFilterHC0nOr)
+        (process.zdcrecoRun3 + process.zdcEnergyFilter0nOr)
     )
 
 process.superFilterPath = cms.Path(process.filterSequence)
