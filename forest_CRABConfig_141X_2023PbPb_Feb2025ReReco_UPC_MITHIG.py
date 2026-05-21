@@ -1,5 +1,5 @@
-# 2023 PbPb UPC, Jan 2024 ReReco
-# CMSSW_13_2_10+
+# 2023 PbPb UPC, Feb 2025 ReReco
+# CMSSW_14_1_7+
 # HIForward[0-19]
 
 from CRABClient.UserUtilities import config
@@ -10,7 +10,7 @@ username = getUsername()
 # INPUT/OUTPUT SETTINGS
 
 pd = 'HIForward0'
-jobTag = '2023PbPbUPC_Feb2025ReReco_20260511Forest_' + pd
+jobTag = '2023PbPbUPC_Feb2025ReReco_20260521Forest_' + pd
 cmsswConfig = 'forest_CMSSWConfig_Run3_141X_2023PbPb_Feb2025ReReco_UPC_MITHIG.py'
 
 inputDAS = '/' + pd + '/HIRun2023A-14Feb2025-v1/MINIAOD'
