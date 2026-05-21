@@ -11,7 +11,7 @@ process = cms.Process('HiForest', Run3_2023_UPC)
 HIFOREST_VERSION = "141X"
 GLOBAL_TAG = "141X_dataRun3_v6"
 INPUT_TEST_FILE = "/store/hidata/HIRun2023A/HIForward0/MINIAOD/14Feb2025-v1/100000/04b121ec-419e-4278-81b1-b24f6c9f4159.root"
-INPUT_MAX_EVENTS    = 1000
+INPUT_MAX_EVENTS    = 10000
 OUTPUT_FILE_NAME    = "HiForest_2023PbPbUPC_Feb25Reco.root"
 
 INCLUDE_CENTRALITY  = False
@@ -131,7 +131,8 @@ if INCLUDE_MUONS :
 # to prevent crash related to HcalSeverityLevelComputerRcd record
 process.load("RecoLocalCalo.HcalRecAlgos.hcalRecAlgoESProd_cfi")
 if INCLUDE_ZDC :
-    process.load('HeavyIonsAnalysis.ZDCAnalysis.ZDCAnalyzersPbPb_cff')
+    # 2023 only had hard coded calibration
+    process.load('HeavyIonsAnalysis.ZDCAnalysis.ZDCAnalyzersHC2023_cff')
 
 ###############################################################################
 
@@ -332,8 +333,8 @@ if INCLUDE_DFINDER :
 process.load('HeavyIonsAnalysis.EventAnalysis.collisionEventSelection_cff')
 process.pclusterCompatibilityFilter = cms.Path(process.clusterCompatibilityFilter)
 process.pprimaryVertexFilter = cms.Path(process.primaryVertexFilter)
-#process.load('HeavyIonsAnalysis.EventAnalysis.hffilterPF_cfi')
-process.load('HeavyIonsAnalysis.ZDCAnalysis.HiZDCfilter_cfi')
+process.load('HeavyIonsAnalysis.EventAnalysis.hffilterPF_cfi')
+process.load('HeavyIonsAnalysis.ZDCAnalysis.HiZDCfilterHC_cfi')
 process.pAna = cms.EndPath(process.skimanalysis)
 
 # HLT Filter
@@ -368,7 +369,7 @@ if INCLUDE_HLTFILTER :
     process.filterSequence = cms.Sequence(
         process.hltfilter *
         process.primaryVertexFilter *
-        (process.zdcrecoRun3 + process.zdcEnergyFilter0nOr)
+        (process.zdcreco2023HardCode + process.zdcEnergyFilterHC0nOr)
     )
 
 process.superFilterPath = cms.Path(process.filterSequence)
