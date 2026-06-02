@@ -98,6 +98,53 @@ crab submit -c forest_CRABConfig_151X_2025PbPb_PromptReco_UPC_MITHIG.py
 ```
 
 
+# 2026 PbPb, Prompt Reco (During Run)
+
+Setup foresting environment:
+
+```bash
+# Create CMSSW (note: 16_1_1 or higher should be fine)
+cmsrel CMSSW_16_1_1
+cd CMSSW_16_1_1/src
+cmsenv
+
+# Add HI foresting tools
+git cms-merge-topic CmsHI:forest_CMSSW_16_1_X
+
+# Initial build to make sure that works
+scram build -j4
+
+# Add Lida's HLT fix:
+cp /eos/cms/store/group/phys_heavyions/lkalipol/FOREST/executable/hltobject_cfi.py HeavyIonsAnalysis/EventAnalysis/python/
+
+# Add Jing's HLT fix:
+git clone git@github.com:boundino/HltL1Run
+# ln -s HltL1Run/L1/ADC .
+
+# Add Dfinder (note: always use 14XX!)
+git clone -b Dfinder_14XX_miniAOD git@github.com:boundino/Bfinder.git --depth 1
+
+# Add this repo 
+git clone -b Run3PbPbUPC_MITHIGForwardStudies git@github.com:jdlang/HIForestSetupPbPbRun2025.git
+
+# Rebuild to apply changes
+scram build -j4
+```
+
+Edit and submit `151X` versions of the `forest_CMSSW` and `forest_CRAB` configs
+
+```bash
+# Initiate VOMS
+voms-proxy-init -rfc -voms cms
+
+# To test CMSSW config locally:
+cmsRun forest_CMSSWConfig_Run3_161X_2026PbPb_PromptReco_UPC_MITHIG.py
+
+# To submit jobs to CRAB:
+crab submit -c forest_CRABConfig_161X_2026PbPb_PromptReco_UPC_MITHIG.py
+```
+
+
 --------------------------------------------------------------------------------
 
 # Quick Reference
