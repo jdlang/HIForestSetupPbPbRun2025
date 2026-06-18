@@ -10,14 +10,14 @@ process = cms.Process('HiForest', Run3_2026_UPC)
 
 HIFOREST_VERSION = "161X"
 GLOBAL_TAG = "161X_dataRun3_Prompt_v1"
-INPUT_TEST_FILE = "root://eoscms.cern.ch//store/hidata/HIRun2026A/HIForward0/MINIAOD/PromptReco-v1/000/404/436/00000/3b32bc8b-e148-4864-af8a-060cbbcd6e4b.root"
+INPUT_TEST_FILE = "root://eoscms.cern.ch//store/hidata/HIRun2026A/HIForward0/MINIAOD/PromptReco-v1/000/404/468/00000/b0f91c4a-34f3-4f0f-be14-d8bdbf65d98b.root"
 INPUT_MAX_EVENTS    = 1000
 OUTPUT_FILE_NAME    = "HiForest_2026PbPbUPC_PromptReco.root"
 
 INCLUDE_CENTRALITY  = False
-INCLUDE_DFINDER     = True
+INCLUDE_DFINDER     = False
 INCLUDE_EGAMMA      = False
-INCLUDE_FSC         = True
+INCLUDE_FSC         = False
 INCLUDE_HLT_OBJ     = False
 INCLUDE_HLTFILTER   = True
 INCLUDE_PFJETS      = True
@@ -117,8 +117,8 @@ if INCLUDE_TRACKS :
     process.PbPbTracks.trackPtMin = cms.untracked.double(0.2)
     process.PbPbTracks.trackEtaMax = cms.untracked.double(2.4)
     process.PbPbTracks.dedxEstimators = cms.VInputTag([
-      #"dedxEstimator:dedxPixelLikelihood",
-      #"dedxEstimator:dedxStripLikelihood",
+      "dedxEstimator:dedxPixelLikelihood",
+      "dedxEstimator:dedxStripLikelihood",
       "dedxEstimator:dedxAllLikelihood"
     ])
 
