@@ -1,6 +1,6 @@
-# 2025 PbPb UPC
-# CMSSW_15_1_0_patch3
-# HIForward[0-??]
+# 2026 PbPb UPC
+# CMSSW_16_1_1_patch3
+# HIForward[0-29]
 
 from CRABClient.UserUtilities import config
 from CRABClient.UserUtilities import getUsername
@@ -10,7 +10,7 @@ username = getUsername()
 # INPUT/OUTPUT SETTINGS
 
 pd = 'HIForward0'
-jobTag = '2026PbPbUPC_PromptReco_20260618Forest_404337-404509_' + pd
+jobTag = '2026PbPbUPC_PromptReco_20260618Forest_404469-404926_' + pd
 cmsswConfig = 'forest_CMSSWConfig_Run3_161X_2026PbPb_PromptReco_UPC_MITHIG.py'
 
 inputDAS = '/' + pd + '/HIRun2026A-PromptReco-v1/MINIAOD'
@@ -37,8 +37,8 @@ config.JobType.allowUndistributedCMSSW = True
 
 config.Data.inputDataset = inputDAS
 config.Data.inputDBS = inputDatabase
-config.Data.lumiMask = '/eos/user/c/cmsdqm/www/CAF/certification/Collisions26HI/Collisions26HI_5p36TeV_404337_404509_golden.json'
-config.Data.runRange = '404337-404509'
+config.Data.lumiMask = '/afs/cern.ch/user/j/jdlang/public/Collisions26HI_5p36TeV_404469_404926_custom.json'
+config.Data.runRange = '404469-404926'
 config.Data.splitting = 'LumiBased'
 config.Data.unitsPerJob = 5
 config.Data.totalUnits = -1

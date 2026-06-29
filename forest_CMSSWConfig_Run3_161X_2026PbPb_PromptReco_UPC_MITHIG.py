@@ -2,7 +2,7 @@
 # Collisions: 2026 PbPb UPC, Prompt Reco
 # Input: miniAOD
 # Type: data
-# SW: CMSSW_16_1_1, forest_CMSSW_16_1_X, Dfinder_14XX_miniAOD
+# SW: CMSSW_16_1_1_patch3, forest_CMSSW_16_1_X, Dfinder_14XX_miniAOD
 
 import FWCore.ParameterSet.Config as cms
 from Configuration.Eras.Era_Run3_2026_UPC_cff import Run3_2026_UPC
@@ -10,7 +10,7 @@ process = cms.Process('HiForest', Run3_2026_UPC)
 
 HIFOREST_VERSION = "161X"
 GLOBAL_TAG = "161X_dataRun3_Prompt_v1"
-INPUT_TEST_FILE = "root://eoscms.cern.ch//store/hidata/HIRun2026A/HIForward0/MINIAOD/PromptReco-v1/000/404/468/00000/b0f91c4a-34f3-4f0f-be14-d8bdbf65d98b.root"
+INPUT_TEST_FILE = "root://eoscms.cern.ch//store/hidata/HIRun2026A/HIForward0/MINIAOD/PromptReco-v1/000/404/471/00000/bd067d24-d359-49fc-b400-43acb0daa978.root"
 INPUT_MAX_EVENTS    = 1000
 OUTPUT_FILE_NAME    = "HiForest_2026PbPbUPC_PromptReco.root"
 
@@ -117,13 +117,12 @@ if INCLUDE_TRACKS :
     process.PbPbTracks.trackPtMin = cms.untracked.double(0.2)
     process.PbPbTracks.trackEtaMax = cms.untracked.double(2.4)
     process.PbPbTracks.dedxEstimators = cms.VInputTag([
-      "dedxEstimator:dedxPixelLikelihood",
-      "dedxEstimator:dedxStripLikelihood",
       "dedxEstimator:dedxAllLikelihood"
     ])
 
 # muons
 if INCLUDE_MUONS :
+    process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
     process.load("HeavyIonsAnalysis.MuonAnalysis.unpackedMuons_cfi")
     process.load("HeavyIonsAnalysis.MuonAnalysis.muonAnalyzer_cfi")
     process.load("HeavyIonsAnalysis.MuonAnalysis.hltMuTree_cfi")
