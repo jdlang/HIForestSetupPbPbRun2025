@@ -16,12 +16,9 @@ cmsenv
 # Add HI foresting tools
 git cms-merge-topic CmsHI:forest_CMSSW_13_2_X
 
-# Include changes from Jing's PR
+# Add CmsHI repo to access future updates (optional)
 cd HeavyIonsAnalysis/
 git remote add cmshi git@github.com:CmsHI/cmssw.git
-git fetch cmshi pull/454/head:forest_CMSSW_13_2_X_PR454
-git switch forest_CMSSW_13_2_X_PR454
-cd ..
 
 # Initial build to make sure that works
 scram build -j4
